@@ -25,6 +25,7 @@ export function BracketMatchCard({ match, teams, tournamentId, className }: Brac
       className={cn(
         "block w-48 rounded-lg border bg-card transition-colors hover:border-primary/50",
         match.id.includes("final") && !match.id.includes("3rd") && "border-primary/30 ring-1 ring-primary/20",
+        !isCompleted && "opacity-60",
         className,
       )}
     >
@@ -38,7 +39,7 @@ export function BracketMatchCard({ match, teams, tournamentId, className }: Brac
         <div className="flex items-center gap-1.5 overflow-hidden">
           {homeTeam ? (
             <>
-              <TeamBadge abbreviation={homeTeam.abbreviation} size="sm" />
+              <TeamBadge abbreviation={homeTeam.abbreviation} size="sm" logoUrl={homeTeam.logoUrl} />
               <span className={cn("truncate text-xs", homeWon ? "font-bold" : "font-medium")}>
                 {homeTeam.name}
               </span>
@@ -62,7 +63,7 @@ export function BracketMatchCard({ match, teams, tournamentId, className }: Brac
         <div className="flex items-center gap-1.5 overflow-hidden">
           {awayTeam ? (
             <>
-              <TeamBadge abbreviation={awayTeam.abbreviation} size="sm" />
+              <TeamBadge abbreviation={awayTeam.abbreviation} size="sm" logoUrl={awayTeam.logoUrl} />
               <span className={cn("truncate text-xs", awayWon ? "font-bold" : "font-medium")}>
                 {awayTeam.name}
               </span>

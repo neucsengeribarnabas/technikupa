@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useTournament } from "@/lib/tournament-context"
 import { calculateGroupStandings, generateMainBracketSeeding, generateConsolationBracketSeeding, generateBracketMatches, getRoundLabel } from "@/lib/tournament-engine"
 import type { Match, GroupStanding } from "@/lib/types"
@@ -13,7 +14,9 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Play, RotateCcw, Check, Pencil, Swords, Trophy, AlertTriangle, X } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { Play, RotateCcw, Check, Pencil, Swords, Trophy, X, Upload, ImageIcon } from "lucide-react"
+import { toast } from "sonner"
 
 export default function AdminPage() {
   const { tournament, dispatch, reset } = useTournament()
@@ -27,8 +30,19 @@ export default function AdminPage() {
   const [scoreDialog, setScoreDialog] = useState<Match | null>(null)
   const [homeScore, setHomeScore] = useState(0)
   const [awayScore, setAwayScore] = useState(0)
+  const [homeYellow, setHomeYellow] = useState(0)
+  const [awayYellow, setAwayYellow] = useState(0)
+  const [homeRed, setHomeRed] = useState(0)
+  const [awayRed, setAwayRed] = useState(0)
+  const [matchComment, setMatchComment] = useState("")
+  const [matchDate, setMatchDate] = useState("")
+  const [matchTime, setMatchTime] = useState("")
+  const [matchField, setMatchField] = useState("")
   const [confirmAdvance, setConfirmAdvance] = useState(false)
   const [confirmReset, setConfirmReset] = useState(false)
+  const [uploading, setUploading] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const siteLogoInputRef = useRef<HTMLInputElement>(null)
 
   const groupStandings = useMemo(() => {
     return tournament.groups.map((g) => ({
@@ -106,6 +120,14 @@ export default function AdminPage() {
     setScoreDialog(match)
     setHomeScore(match.homeScore ?? 0)
     setAwayScore(match.awayScore ?? 0)
+    setHomeYellow(match.homeYellowCards ?? 0)
+    setAwayYellow(match.awayYellowCards ?? 0)
+    setHomeRed(match.homeRedCards ?? 0)
+    setAwayRed(match.awayRedCards ?? 0)
+    setMatchComment(match.comment ?? "")
+    setMatchDate(match.matchDate ?? "")
+    setMatchTime(match.matchTime ?? "")
+    setMatchField(match.field ?? "")
   }
 
   function handleSaveScore() {
@@ -115,7 +137,45 @@ export default function AdminPage() {
       payload: {
         tournamentId,
         matchId: scoreDialog.id,
-        updates: { homeScore, awayScore, status: "completed" as const },
+        updates: {
+          homeScore,
+          awayScore,
+          status: "completed" as const,
+          homeYellowCards: homeYellow,
+          awayYellowCards: awayYellow,
+          homeRedCards: homeRed,
+          awayRedCards: awayRed,
+          comment: matchComment || undefined,
+          matchDate: matchDate || undefined,
+          matchTime: matchTime || undefined,
+          field: matchField || undefined,
+        },
+      },
+    })
+    setScoreDialog(null)
+  }
+
+  function handleSaveMatchInfo() {
+    if (!scoreDialog) return
+    dispatch({
+      type: "UPDATE_MATCH",
+      payload: {
+        tournamentId,
+        matchId: scoreDialog.id,
+        updates: {
+          comment: matchComment || undefined,
+          matchDate: matchDate || undefined,
+          matchTime: matchTime || undefined,
+          field: matchField || undefined,
+          ...(scoreDialog.status === "completed" ? {
+            homeScore,
+            awayScore,
+            homeYellowCards: homeYellow,
+            awayYellowCards: awayYellow,
+            homeRedCards: homeRed,
+            awayRedCards: awayRed,
+          } : {}),
+        },
       },
     })
     setScoreDialog(null)
@@ -171,6 +231,58 @@ export default function AdminPage() {
   function getTeamName(id: string | null) {
     if (!id) return "TBD"
     return tournament.teams.find((t) => t.id === id)?.name ?? "TBD"
+  }
+
+  async function handleLogoUpload(teamId: string, file: File) {
+    setUploading(teamId)
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("type", "team")
+      formData.append("id", teamId)
+      const res = await fetch("/api/upload", { method: "POST", body: formData })
+      if (!res.ok) {
+        const data = await res.json()
+        toast.error(data.error || "Upload failed")
+        return
+      }
+      const { url } = await res.json()
+      dispatch({
+        type: "UPDATE_TEAM",
+        payload: { tournamentId, teamId, updates: { logoUrl: url } },
+      })
+      toast.success("Logo uploaded")
+    } catch {
+      toast.error("Upload failed")
+    } finally {
+      setUploading(null)
+    }
+  }
+
+  async function handleSiteLogoUpload(file: File) {
+    setUploading("site")
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      formData.append("type", "site")
+      formData.append("id", "site")
+      const res = await fetch("/api/upload", { method: "POST", body: formData })
+      if (!res.ok) {
+        const data = await res.json()
+        toast.error(data.error || "Upload failed")
+        return
+      }
+      const { url } = await res.json()
+      dispatch({
+        type: "UPDATE_TOURNAMENT",
+        payload: { id: tournamentId, updates: { siteLogo: url } },
+      })
+      toast.success("Site logo uploaded")
+    } catch {
+      toast.error("Upload failed")
+    } finally {
+      setUploading(null)
+    }
   }
 
   const statusLabel =
@@ -304,7 +416,7 @@ export default function AdminPage() {
         </div>
 
         <Tabs defaultValue="teams">
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 flex-wrap">
             <TabsTrigger value="teams">Teams & Groups</TabsTrigger>
             <TabsTrigger value="group-matches">Group Matches</TabsTrigger>
             <TabsTrigger value="knockout">Knockout</TabsTrigger>
@@ -326,6 +438,7 @@ export default function AdminPage() {
                       <Table>
                         <TableHeader>
                           <TableRow>
+                            <TableHead>Logo</TableHead>
                             <TableHead>Abbr</TableHead>
                             <TableHead>Team Name</TableHead>
                             <TableHead>Group</TableHead>
@@ -337,6 +450,13 @@ export default function AdminPage() {
                             <TableRow key={team.id}>
                               {editTeamId === team.id ? (
                                 <>
+                                  <TableCell>
+                                    {team.logoUrl ? (
+                                      <Image src={team.logoUrl} alt={`${team.name} logo`} width={24} height={24} className="rounded object-contain" />
+                                    ) : (
+                                      <span className="text-xs text-muted-foreground">-</span>
+                                    )}
+                                  </TableCell>
                                   <TableCell>
                                     <Input
                                       value={editTeamAbbr}
@@ -368,6 +488,35 @@ export default function AdminPage() {
                                 </>
                               ) : (
                                 <>
+                                  <TableCell>
+                                    <div className="flex items-center gap-1">
+                                      {team.logoUrl ? (
+                                        <Image src={team.logoUrl} alt={`${team.name} logo`} width={24} height={24} className="rounded object-contain" />
+                                      ) : (
+                                        <span className="flex h-6 w-6 items-center justify-center rounded bg-secondary text-[10px] text-muted-foreground">
+                                          <ImageIcon className="h-3 w-3" />
+                                        </span>
+                                      )}
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-6 w-6 p-0"
+                                        disabled={uploading === team.id}
+                                        onClick={() => {
+                                          const input = document.createElement("input")
+                                          input.type = "file"
+                                          input.accept = "image/png,image/jpeg,image/webp,image/svg+xml"
+                                          input.onchange = (e) => {
+                                            const f = (e.target as HTMLInputElement).files?.[0]
+                                            if (f) handleLogoUpload(team.id, f)
+                                          }
+                                          input.click()
+                                        }}
+                                      >
+                                        <Upload className="h-3 w-3" />
+                                      </Button>
+                                    </div>
+                                  </TableCell>
                                   <TableCell className="font-mono text-muted-foreground">{team.abbreviation}</TableCell>
                                   <TableCell className="font-medium text-foreground">{team.name}</TableCell>
                                   <TableCell className="text-muted-foreground">{group.label}</TableCell>
@@ -427,7 +576,7 @@ export default function AdminPage() {
                             <DialogHeader>
                               <DialogTitle>Advance to Knockout Stage?</DialogTitle>
                               <DialogDescription>
-                                This will lock group results and generate the knockout bracket. Top 2 teams from each group advance to the main bracket, bottom 2 to consolation.
+                                This will lock group results and generate the knockout bracket. Top 2 teams from each group advance to the main bracket, 3rd and 4th to consolation.
                               </DialogDescription>
                             </DialogHeader>
                             <div className="space-y-3 my-4">
@@ -537,84 +686,192 @@ export default function AdminPage() {
 
           {/* Settings Tab */}
           <TabsContent value="settings">
-            <Card>
-              <CardHeader>
-                <CardTitle>Tournament Settings</CardTitle>
-                <CardDescription>View tournament details and manage settings</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label>Teams</Label>
-                    <p className="text-sm text-foreground">{tournament.teams.length}</p>
+            <div className="space-y-6">
+              {/* Site Logo */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Site Logo</CardTitle>
+                  <CardDescription>Upload a logo for the tournament site (shown in the navbar)</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-4">
+                    {tournament.siteLogo ? (
+                      <Image src={tournament.siteLogo} alt="Site logo" width={48} height={48} className="rounded object-contain" />
+                    ) : (
+                      <span className="flex h-12 w-12 items-center justify-center rounded bg-secondary text-muted-foreground">
+                        <ImageIcon className="h-6 w-6" />
+                      </span>
+                    )}
+                    <input
+                      ref={siteLogoInputRef}
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0]
+                        if (f) handleSiteLogoUpload(f)
+                      }}
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={uploading === "site"}
+                      onClick={() => siteLogoInputRef.current?.click()}
+                    >
+                      <Upload className="mr-1.5 h-3.5 w-3.5" />
+                      {uploading === "site" ? "Uploading..." : "Upload Logo"}
+                    </Button>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Groups</Label>
-                    <p className="text-sm text-foreground">{tournament.groups.length}</p>
+                </CardContent>
+              </Card>
+
+              {/* Tournament Settings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Tournament Settings</CardTitle>
+                  <CardDescription>View tournament details and manage settings</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label>Teams</Label>
+                      <p className="text-sm text-foreground">{tournament.teams.length}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Groups</Label>
+                      <p className="text-sm text-foreground">{tournament.groups.length}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Matches</Label>
+                      <p className="text-sm text-foreground">{tournament.matches.length}</p>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Matches</Label>
-                    <p className="text-sm text-foreground">{tournament.matches.length}</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <p className="text-sm text-foreground">{statusLabel}</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Groups Locked</Label>
+                      <p className="text-sm text-foreground">{tournament.groupStageLocked ? "Yes" : "No"}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label>Status</Label>
-                    <p className="text-sm text-foreground">{statusLabel}</p>
+                  <div className="pt-4 border-t border-border">
+                    <h4 className="text-sm font-medium text-foreground mb-3">Danger Zone</h4>
+                    <Dialog open={confirmReset} onOpenChange={setConfirmReset}>
+                      <DialogTrigger asChild>
+                        <Button variant="destructive" size="sm">Reset Tournament</Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Reset Tournament?</DialogTitle>
+                          <DialogDescription>This will delete all teams, matches, and scores and start fresh with a blank tournament. This action cannot be undone.</DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <Button variant="outline" onClick={() => setConfirmReset(false)}>Cancel</Button>
+                          <Button variant="destructive" onClick={() => { reset(); setConfirmReset(false) }}>Reset Everything</Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Groups Locked</Label>
-                    <p className="text-sm text-foreground">{tournament.groupStageLocked ? "Yes" : "No"}</p>
-                  </div>
-                </div>
-                <div className="pt-4 border-t border-border">
-                  <h4 className="text-sm font-medium text-foreground mb-3">Danger Zone</h4>
-                  <Dialog open={confirmReset} onOpenChange={setConfirmReset}>
-                    <DialogTrigger asChild>
-                      <Button variant="destructive" size="sm">Reset Tournament</Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Reset Tournament?</DialogTitle>
-                        <DialogDescription>This will delete all teams, matches, and scores and start fresh with a blank tournament. This action cannot be undone.</DialogDescription>
-                      </DialogHeader>
-                      <DialogFooter>
-                        <Button variant="outline" onClick={() => setConfirmReset(false)}>Cancel</Button>
-                        <Button variant="destructive" onClick={() => { reset(); setConfirmReset(false) }}>Reset Everything</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
 
-        {/* Score Dialog */}
+        {/* Extended Score/Match Dialog */}
         <Dialog open={!!scoreDialog} onOpenChange={(open) => !open && setScoreDialog(null)}>
-          <DialogContent>
+          <DialogContent className="max-w-lg">
             <DialogHeader>
-              <DialogTitle>Enter Score</DialogTitle>
+              <DialogTitle>Edit Match</DialogTitle>
               <DialogDescription>
                 {scoreDialog && `${getTeamName(scoreDialog.homeTeamId)} vs ${getTeamName(scoreDialog.awayTeamId)}`}
               </DialogDescription>
             </DialogHeader>
-            <div className="grid grid-cols-2 gap-6 py-4">
-              <div className="space-y-2 text-center">
-                <Label>{scoreDialog && getTeamName(scoreDialog.homeTeamId)}</Label>
-                <Input type="number" min={0} value={homeScore} onChange={(e) => setHomeScore(Number(e.target.value))} className="text-center text-2xl font-bold h-14" />
+            <div className="space-y-6 py-4">
+              {/* Score */}
+              <div>
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Score</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1 text-center">
+                    <Label className="text-xs">{scoreDialog && getTeamName(scoreDialog.homeTeamId)}</Label>
+                    <Input type="number" min={0} value={homeScore} onChange={(e) => setHomeScore(Number(e.target.value))} className="text-center text-2xl font-bold h-14" />
+                  </div>
+                  <div className="space-y-1 text-center">
+                    <Label className="text-xs">{scoreDialog && getTeamName(scoreDialog.awayTeamId)}</Label>
+                    <Input type="number" min={0} value={awayScore} onChange={(e) => setAwayScore(Number(e.target.value))} className="text-center text-2xl font-bold h-14" />
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2 text-center">
-                <Label>{scoreDialog && getTeamName(scoreDialog.awayTeamId)}</Label>
-                <Input type="number" min={0} value={awayScore} onChange={(e) => setAwayScore(Number(e.target.value))} className="text-center text-2xl font-bold h-14" />
+
+              {/* Cards */}
+              <div>
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Cards</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="h-4 w-3 rounded-sm bg-yellow-400 shrink-0" aria-label="Yellow card" />
+                      <Input type="number" min={0} value={homeYellow} onChange={(e) => setHomeYellow(Number(e.target.value))} className="h-8" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="h-4 w-3 rounded-sm bg-red-500 shrink-0" aria-label="Red card" />
+                      <Input type="number" min={0} value={homeRed} onChange={(e) => setHomeRed(Number(e.target.value))} className="h-8" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="h-4 w-3 rounded-sm bg-yellow-400 shrink-0" aria-label="Yellow card" />
+                      <Input type="number" min={0} value={awayYellow} onChange={(e) => setAwayYellow(Number(e.target.value))} className="h-8" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="h-4 w-3 rounded-sm bg-red-500 shrink-0" aria-label="Red card" />
+                      <Input type="number" min={0} value={awayRed} onChange={(e) => setAwayRed(Number(e.target.value))} className="h-8" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Date / Time / Field */}
+              <div>
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Schedule</Label>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Date</Label>
+                    <Input type="date" value={matchDate} onChange={(e) => setMatchDate(e.target.value)} className="h-8" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Time</Label>
+                    <Input type="time" value={matchTime} onChange={(e) => setMatchTime(e.target.value)} className="h-8" />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Field</Label>
+                    <Input type="text" value={matchField} onChange={(e) => setMatchField(e.target.value)} placeholder="Field name" className="h-8" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Comment */}
+              <div className="space-y-1">
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground">Comment</Label>
+                <Textarea
+                  value={matchComment}
+                  onChange={(e) => setMatchComment(e.target.value)}
+                  placeholder="Optional comment about this match..."
+                  rows={2}
+                />
               </div>
             </div>
-            <DialogFooter>
+            <DialogFooter className="gap-2">
               <Button variant="outline" onClick={() => setScoreDialog(null)}>Cancel</Button>
-              <Button onClick={handleSaveScore}>Save Score</Button>
+              <Button variant="secondary" onClick={handleSaveMatchInfo}>Save Info Only</Button>
+              <Button onClick={handleSaveScore}>Save & Complete</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Hidden file inputs */}
+        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" />
       </div>
     </div>
   )
