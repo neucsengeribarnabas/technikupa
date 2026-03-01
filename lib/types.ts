@@ -13,6 +13,7 @@ export interface Team {
   groupId: string
   seed?: number
   flagCode?: string // ISO 3166 alpha-2 for flag display
+  logoUrl?: string  // path to uploaded logo image
 }
 
 export interface Group {
@@ -41,6 +42,10 @@ export interface Match {
   awayRedCards?: number
   // Metadata
   matchday?: number
+  comment?: string        // free text comment
+  matchDate?: string      // ISO date string (YYYY-MM-DD)
+  matchTime?: string      // time string (HH:MM)
+  field?: string          // field/venue name
   nextMatchId?: string | null // id of the match the winner advances to
   nextMatchSlot?: "home" | "away" // which slot in the next match
 }
@@ -57,6 +62,7 @@ export interface Tournament {
   updatedAt: string
   groupStageLocked: boolean
   bracketStageLocked: boolean
+  siteLogo?: string // path to site logo image
 }
 
 // ── Computed / derived ────────────────────────────────
