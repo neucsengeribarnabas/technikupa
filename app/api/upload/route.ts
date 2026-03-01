@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
   const ext = file.name.split(".").pop() || "png"
   const filename = type === "site" ? `site-logo.${ext}` : `${id}.${ext}`
-  const dir = path.join(process.cwd(), "public", "logos")
+  const dir = path.join(process.cwd(), "data", "logos")
 
   await mkdir(dir, { recursive: true })
 
@@ -47,6 +47,6 @@ export async function POST(req: NextRequest) {
   const filePath = path.join(dir, filename)
   await writeFile(filePath, buffer)
 
-  const publicPath = `/logos/${filename}`
+  const publicPath = `/api/logos/${filename}`
   return NextResponse.json({ url: publicPath })
 }
