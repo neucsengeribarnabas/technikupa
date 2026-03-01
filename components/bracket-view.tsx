@@ -15,14 +15,16 @@ interface BracketViewProps {
 
 export function BracketView({ matches, teams, tournamentId, stage, title }: BracketViewProps) {
   const bracketMatches = matches
-    .filter((m) => m.stage === stage && !m.id.includes("3rd"))
+    .filter((m) => m.stage === stage && !m.id.includes("3rd") && !m.id.includes("5th") && !m.id.includes("7th") && !m.id.includes("playoff"))
     .sort((a, b) => {
       if ((a.bracketRound ?? 0) !== (b.bracketRound ?? 0))
         return (a.bracketRound ?? 0) - (b.bracketRound ?? 0)
       return (a.bracketPosition ?? 0) - (b.bracketPosition ?? 0)
     })
 
-  const thirdPlaceMatch = matches.find((m) => m.stage === stage && m.id.includes("3rd"))
+  const placementMatches = matches.filter(
+    (m) => m.stage === stage && (m.id.includes("3rd") || m.id.includes("5th") || m.id.includes("7th") || m.id.includes("playoff"))
+  )
 
   if (bracketMatches.length === 0) {
     return (
@@ -42,18 +44,24 @@ export function BracketView({ matches, teams, tournamentId, stage, title }: Brac
 
   const totalRounds = Math.max(...Array.from(rounds.keys())) + 1
 
+  function getPlacementLabel(matchId: string): string {
+    if (matchId.includes("3rd")) return stage === "main" ? "3rd Place" : "11th Place"
+    if (matchId.includes("5th")) return stage === "main" ? "5th Place" : "13th Place"
+    if (matchId.includes("7th")) return stage === "main" ? "7th Place" : "15th Place"
+    return "Placement"
+  }
+
   return (
     <div className="space-y-6">
       <h3 className="text-lg font-bold">{title}</h3>
 
       {/* Desktop bracket view */}
       <div className="hidden overflow-x-auto md:block">
-        <div className="flex items-start gap-8 pb-4" style={{ minWidth: `${totalRounds * 220}px` }}>
+        <div className="flex items-start gap-8 pb-4" style={{ minWidth: `${totalRounds * 240}px` }}>
           {Array.from(rounds.entries())
             .sort(([a], [b]) => a - b)
             .map(([round, roundMatches]) => {
               const label = getRoundLabel(round, totalRounds)
-              // Spacing increases with each round to align vertically
               const gapMultiplier = Math.pow(2, round)
 
               return (
@@ -75,7 +83,6 @@ export function BracketView({ matches, teams, tournamentId, stage, title }: Brac
                           teams={teams}
                           tournamentId={tournamentId}
                         />
-                        {/* Connector line to next round */}
                         {match.nextMatchId && (
                           <div
                             className="absolute right-0 top-1/2 h-px w-8 -translate-y-1/2 bg-border"
@@ -118,18 +125,22 @@ export function BracketView({ matches, teams, tournamentId, stage, title }: Brac
           })}
       </div>
 
-      {/* 3rd place match */}
-      {thirdPlaceMatch && (
-        <div className="space-y-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {stage === "main" ? "3rd Place Match" : "11th Place Match"}
-          </span>
-          <BracketMatchCard
-            match={thirdPlaceMatch}
-            teams={teams}
-            tournamentId={tournamentId}
-            className={cn("md:w-48")}
-          />
+      {/* Placement matches */}
+      {placementMatches.length > 0 && (
+        <div className="space-y-3">
+          <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Placement Matches</h4>
+          <div className="flex flex-wrap gap-3">
+            {placementMatches.map((match) => (
+              <BracketMatchCard
+                key={match.id}
+                match={match}
+                teams={teams}
+                tournamentId={tournamentId}
+                label={getPlacementLabel(match.id)}
+                className={cn("md:w-52")}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>

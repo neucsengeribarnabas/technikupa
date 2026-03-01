@@ -65,7 +65,7 @@ export default function TeamDetailPage({
 
       {/* Team header */}
       <div className="flex items-center gap-4">
-        <TeamBadge abbreviation={team.abbreviation} groupLabel={groupLabel} size="lg" />
+        <TeamBadge abbreviation={team.abbreviation} groupLabel={groupLabel} size="lg" logoUrl={team.logoUrl} stacked />
         <div>
           <h1 className="text-2xl font-bold">{team.name}</h1>
           <p className="text-sm text-muted-foreground">

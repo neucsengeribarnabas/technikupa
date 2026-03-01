@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useRef } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { useTournament } from "@/lib/tournament-context"
 import { calculateGroupStandings, generateMainBracketSeeding, generateConsolationBracketSeeding, generateBracketMatches, getRoundLabel } from "@/lib/tournament-engine"
 import type { Match, GroupStanding } from "@/lib/types"
@@ -452,7 +451,7 @@ export default function AdminPage() {
                                 <>
                                   <TableCell>
                                     {team.logoUrl ? (
-                                      <Image src={team.logoUrl} alt={`${team.name} logo`} width={24} height={24} className="rounded object-contain" />
+                                      <img src={team.logoUrl} alt={`${team.name} logo`} width={24} height={24} className="rounded object-contain" />
                                     ) : (
                                       <span className="text-xs text-muted-foreground">-</span>
                                     )}
@@ -491,7 +490,7 @@ export default function AdminPage() {
                                   <TableCell>
                                     <div className="flex items-center gap-1">
                                       {team.logoUrl ? (
-                                        <Image src={team.logoUrl} alt={`${team.name} logo`} width={24} height={24} className="rounded object-contain" />
+                                        <img src={team.logoUrl} alt={`${team.name} logo`} width={24} height={24} className="rounded object-contain" />
                                       ) : (
                                         <span className="flex h-6 w-6 items-center justify-center rounded bg-secondary text-[10px] text-muted-foreground">
                                           <ImageIcon className="h-3 w-3" />
@@ -696,7 +695,7 @@ export default function AdminPage() {
                 <CardContent>
                   <div className="flex items-center gap-4">
                     {tournament.siteLogo ? (
-                      <Image src={tournament.siteLogo} alt="Site logo" width={48} height={48} className="rounded object-contain" />
+                      <img src={tournament.siteLogo} alt="Site logo" width={48} height={48} className="rounded object-contain" />
                     ) : (
                       <span className="flex h-12 w-12 items-center justify-center rounded bg-secondary text-muted-foreground">
                         <ImageIcon className="h-6 w-6" />

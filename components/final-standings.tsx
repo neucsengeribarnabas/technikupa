@@ -60,6 +60,7 @@ export function FinalStandings({ tournament }: FinalStandingsProps) {
               abbreviation={p.team.abbreviation}
               groupLabel={p.team.groupId?.replace("group-", "").toUpperCase()}
               size="md"
+              logoUrl={p.team.logoUrl}
             />
             <div>
               <span className="font-medium">{p.team.name}</span>

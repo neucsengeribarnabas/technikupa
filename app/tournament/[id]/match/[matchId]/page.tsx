@@ -88,6 +88,7 @@ export default function MatchDetailPage({
                   groupLabel={homeTeam.groupId.replace("group-", "").toUpperCase()}
                   size="lg"
                   logoUrl={homeTeam.logoUrl}
+                  stacked
                 />
                 <Link
                   href={`/tournament/${id}/team/${homeTeam.id}`}
@@ -135,6 +136,7 @@ export default function MatchDetailPage({
                   groupLabel={awayTeam.groupId.replace("group-", "").toUpperCase()}
                   size="lg"
                   logoUrl={awayTeam.logoUrl}
+                  stacked
                 />
                 <Link
                   href={`/tournament/${id}/team/${awayTeam.id}`}

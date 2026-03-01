@@ -48,6 +48,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
                 groupLabel={groups.get(homeTeam.id)}
                 size={compact ? "sm" : "md"}
                 logoUrl={homeTeam.logoUrl}
+                stacked
               />
               {!compact && (
                 <span className={cn("text-sm font-medium", homeWon && "font-bold")}>
@@ -72,7 +73,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
           {awayTeam ? (
             <>
               {!compact && (
-                <span className={cn("text-sm font-medium", awayWon && "font-bold")}>
+                <span className={cn("text-sm font-medium text-right", awayWon && "font-bold")}>
                   {awayTeam.name}
                 </span>
               )}
@@ -81,6 +82,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
                 groupLabel={groups.get(awayTeam.id)}
                 size={compact ? "sm" : "md"}
                 logoUrl={awayTeam.logoUrl}
+                stacked
               />
             </>
           ) : (

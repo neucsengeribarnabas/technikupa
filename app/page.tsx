@@ -155,6 +155,7 @@ export default function HomePage() {
                 matches={t.matches}
                 tournamentId={t.id}
                 compact
+                linkToGroup
               />
             ))}
           </div>

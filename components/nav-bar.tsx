@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { useTournament } from "@/lib/tournament-context"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
-import Image from "next/image"
 
 export function NavBar() {
   const pathname = usePathname()
@@ -20,7 +19,7 @@ export function NavBar() {
 
   const publicLinks = [
     { href: "/", label: "Home" },
-    { href: `/tournament/${tid}`, label: "Overview" },
+    { href: `/tournament/${tid}`, label: "Matches" },
     { href: `/tournament/${tid}/groups`, label: "Groups" },
     { href: `/tournament/${tid}/bracket`, label: "Bracket" },
     { href: `/tournament/${tid}/standings`, label: "Standings" },
@@ -44,7 +43,7 @@ export function NavBar() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           {tournament.siteLogo ? (
-            <Image
+            <img
               src={tournament.siteLogo}
               alt={`${tournament.name} logo`}
               width={24}

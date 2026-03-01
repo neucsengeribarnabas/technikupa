@@ -12,25 +12,36 @@ interface GroupTableProps {
   matches: Match[]
   tournamentId: string
   compact?: boolean
+  /** Makes the group header clickable to navigate to group page */
+  linkToGroup?: boolean
 }
 
-export function GroupTable({ group, teams, matches, tournamentId, compact }: GroupTableProps) {
+export function GroupTable({ group, teams, matches, tournamentId, compact, linkToGroup }: GroupTableProps) {
   const standings = calculateGroupStandings(group, teams, matches)
   const colors = getGroupColors(group.label)
+
+  const headerContent = (
+    <div className={cn("flex items-center gap-2 px-4 py-2.5", colors.bg, linkToGroup && "cursor-pointer hover:opacity-80 transition-opacity")}>
+      <span className={cn("text-sm font-bold", colors.text)}>{group.name}</span>
+    </div>
+  )
 
   return (
     <div className="overflow-hidden rounded-lg border">
       {/* Group header */}
-      <div className={cn("flex items-center gap-2 px-4 py-2.5", colors.bg)}>
-        <span className={cn("text-sm font-bold", colors.text)}>{group.name}</span>
-      </div>
+      {linkToGroup ? (
+        <Link href={`/tournament/${tournamentId}/groups`}>
+          {headerContent}
+        </Link>
+      ) : (
+        headerContent
+      )}
 
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="px-3 py-2 text-left font-medium text-muted-foreground" title="Position">#</th>
               <th className="px-3 py-2 text-left font-medium text-muted-foreground">Team</th>
               <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Played">P</th>
               <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Won">W</th>
@@ -60,13 +71,21 @@ export function GroupTable({ group, teams, matches, tournamentId, compact }: Gro
                   s.qualified === "consolation" && "border-l-2 border-l-qualify-consolation",
                 )}
               >
-                <td className="px-3 py-2 font-mono text-muted-foreground">{s.rank}</td>
                 <td className="px-3 py-2">
                   <Link
                     href={`/tournament/${tournamentId}/team/${s.teamId}`}
                     className="flex items-center gap-2 hover:underline"
                   >
-                    <TeamBadge abbreviation={s.team.abbreviation} groupLabel={group.label} size="sm" logoUrl={s.team.logoUrl} />
+                    {s.team.logoUrl && (
+                      <img
+                        src={s.team.logoUrl}
+                        alt={`${s.team.abbreviation} logo`}
+                        width={20}
+                        height={20}
+                        className="rounded object-contain"
+                      />
+                    )}
+                    <TeamBadge abbreviation={s.team.abbreviation} groupLabel={group.label} size="sm" />
                     {!compact && <span className="font-medium">{s.team.name}</span>}
                   </Link>
                 </td>

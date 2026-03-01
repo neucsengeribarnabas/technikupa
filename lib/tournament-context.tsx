@@ -139,13 +139,14 @@ function tournamentReducer(state: TournamentState, action: Action): TournamentSt
             m.id === action.payload.matchId ? { ...m, ...action.payload.updates } : m,
           )
           // If the match now has a completed score, advance the winner in the bracket
+          // and send losers to placement matches (3rd, 5th, 7th place)
           const updatedMatch = updatedMatches.find((m) => m.id === action.payload.matchId)
           if (
             updatedMatch &&
             updatedMatch.status === "completed" &&
             updatedMatch.homeScore != null &&
             updatedMatch.awayScore != null &&
-            updatedMatch.nextMatchId
+            (updatedMatch.stage === "main" || updatedMatch.stage === "consolation")
           ) {
             updatedMatches = advanceBracketWinner(updatedMatches, action.payload.matchId)
           }
