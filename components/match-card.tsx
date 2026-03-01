@@ -34,6 +34,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
       href={`/tournament/${tournamentId}/match/${match.id}`}
       className={cn(
         "block rounded-lg border bg-card p-3 transition-colors hover:bg-secondary/50",
+        !isCompleted && "opacity-60",
         className,
       )}
     >
@@ -46,6 +47,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
                 abbreviation={homeTeam.abbreviation}
                 groupLabel={groups.get(homeTeam.id)}
                 size={compact ? "sm" : "md"}
+                logoUrl={homeTeam.logoUrl}
               />
               {!compact && (
                 <span className={cn("text-sm font-medium", homeWon && "font-bold")}>
@@ -78,6 +80,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
                 abbreviation={awayTeam.abbreviation}
                 groupLabel={groups.get(awayTeam.id)}
                 size={compact ? "sm" : "md"}
+                logoUrl={awayTeam.logoUrl}
               />
             </>
           ) : (
@@ -86,7 +89,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
         </div>
       </div>
       {!compact && (
-        <div className="mt-1.5 flex items-center justify-center">
+        <div className="mt-1.5 flex flex-col items-center gap-0.5">
           <span
             className={cn(
               "text-[10px] font-medium uppercase tracking-wider",
@@ -95,6 +98,11 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
           >
             {match.status === "completed" ? "Full Time" : match.status === "in_progress" ? "Live" : "Scheduled"}
           </span>
+          {(match.matchDate || match.matchTime || match.field) && (
+            <span className="text-[10px] text-muted-foreground">
+              {[match.matchDate, match.matchTime, match.field].filter(Boolean).join(" / ")}
+            </span>
+          )}
         </div>
       )}
     </Link>

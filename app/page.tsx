@@ -5,7 +5,8 @@ import { useTournament } from "@/lib/tournament-context"
 import { GroupTable } from "@/components/group-table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Trophy, Users, Swords, ArrowRight } from "lucide-react"
+import { MatchCard } from "@/components/match-card"
+import { Trophy, Users, Swords, ArrowRight, Calendar } from "lucide-react"
 
 export default function HomePage() {
   const { tournament: t } = useTournament()
@@ -14,6 +15,11 @@ export default function HomePage() {
   const completedMatches = t.matches.filter((m) => m.status === "completed").length
   const groupMatches = t.matches.filter((m) => m.stage === "group")
   const bracketMatches = t.matches.filter((m) => m.stage === "main" || m.stage === "consolation")
+
+  // Next matches: scheduled matches with known teams
+  const nextMatches = t.matches
+    .filter((m) => m.status === "scheduled" && m.homeTeamId && m.awayTeamId)
+    .slice(0, 6)
 
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8">

@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useTournament } from "@/lib/tournament-context"
 import { TeamBadge } from "@/components/team-badge"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Calendar, Clock, MapPin, MessageSquare } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function MatchDetailPage({
@@ -48,11 +48,33 @@ export default function MatchDetailPage({
         </Button>
       </Link>
 
-      {/* Stage label */}
-      <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-        {stageLabel}
-        {match.matchday && ` / Matchday ${match.matchday}`}
-      </p>
+      {/* Stage label + match info */}
+      <div className="space-y-1">
+        <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          {stageLabel}
+          {match.matchday && ` / Matchday ${match.matchday}`}
+        </p>
+        <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+          {match.matchDate && (
+            <span className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              {match.matchDate}
+            </span>
+          )}
+          {match.matchTime && (
+            <span className="flex items-center gap-1">
+              <Clock className="h-3 w-3" />
+              {match.matchTime}
+            </span>
+          )}
+          {match.field && (
+            <span className="flex items-center gap-1">
+              <MapPin className="h-3 w-3" />
+              {match.field}
+            </span>
+          )}
+        </div>
+      </div>
 
       {/* Match score card */}
       <div className="rounded-xl border bg-card p-6">
@@ -65,6 +87,7 @@ export default function MatchDetailPage({
                   abbreviation={homeTeam.abbreviation}
                   groupLabel={homeTeam.groupId.replace("group-", "").toUpperCase()}
                   size="lg"
+                  logoUrl={homeTeam.logoUrl}
                 />
                 <Link
                   href={`/tournament/${id}/team/${homeTeam.id}`}
@@ -111,6 +134,7 @@ export default function MatchDetailPage({
                   abbreviation={awayTeam.abbreviation}
                   groupLabel={awayTeam.groupId.replace("group-", "").toUpperCase()}
                   size="lg"
+                  logoUrl={awayTeam.logoUrl}
                 />
                 <Link
                   href={`/tournament/${id}/team/${awayTeam.id}`}
@@ -141,6 +165,16 @@ export default function MatchDetailPage({
                 <span className="font-mono">{stat.away}</span>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Comment */}
+      {match.comment && (
+        <div className="rounded-lg border bg-card p-4">
+          <div className="flex items-start gap-2">
+            <MessageSquare className="mt-0.5 h-4 w-4 text-muted-foreground shrink-0" />
+            <p className="text-sm text-muted-foreground">{match.comment}</p>
           </div>
         </div>
       )}

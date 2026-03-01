@@ -30,24 +30,24 @@ export function GroupTable({ group, teams, matches, tournamentId, compact }: Gro
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="px-3 py-2 text-left font-medium text-muted-foreground">#</th>
+              <th className="px-3 py-2 text-left font-medium text-muted-foreground" title="Position">#</th>
               <th className="px-3 py-2 text-left font-medium text-muted-foreground">Team</th>
-              <th className="px-3 py-2 text-center font-medium text-muted-foreground">P</th>
-              <th className="px-3 py-2 text-center font-medium text-muted-foreground">W</th>
+              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Played">P</th>
+              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Won">W</th>
               {!compact && (
-                <th className="px-3 py-2 text-center font-medium text-muted-foreground">D</th>
+                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Drawn">D</th>
               )}
               {!compact && (
-                <th className="px-3 py-2 text-center font-medium text-muted-foreground">L</th>
+                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Lost">L</th>
               )}
               {!compact && (
-                <th className="px-3 py-2 text-center font-medium text-muted-foreground">GF</th>
+                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Goals For">GF</th>
               )}
               {!compact && (
-                <th className="px-3 py-2 text-center font-medium text-muted-foreground">GA</th>
+                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Goals Against">GA</th>
               )}
-              <th className="px-3 py-2 text-center font-medium text-muted-foreground">GD</th>
-              <th className="px-3 py-2 text-center font-medium text-muted-foreground">Pts</th>
+              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Goal Difference">GD</th>
+              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Points">Pts</th>
             </tr>
           </thead>
           <tbody>
@@ -66,7 +66,7 @@ export function GroupTable({ group, teams, matches, tournamentId, compact }: Gro
                     href={`/tournament/${tournamentId}/team/${s.teamId}`}
                     className="flex items-center gap-2 hover:underline"
                   >
-                    <TeamBadge abbreviation={s.team.abbreviation} groupLabel={group.label} size="sm" />
+                    <TeamBadge abbreviation={s.team.abbreviation} groupLabel={group.label} size="sm" logoUrl={s.team.logoUrl} />
                     {!compact && <span className="font-medium">{s.team.name}</span>}
                   </Link>
                 </td>

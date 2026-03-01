@@ -6,6 +6,8 @@ import {
   useReducer,
   useEffect,
   useCallback,
+  useRef,
+  useState,
   type ReactNode,
 } from "react"
 import type { Tournament, TournamentState, Match, Team, Group } from "./types"
@@ -181,41 +183,60 @@ interface TournamentContextValue {
 
 const TournamentContext = createContext<TournamentContextValue | null>(null)
 
-const STORAGE_KEY = "tournament-app-state"
-
 export function TournamentProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(tournamentReducer, createInitialState())
+  const [loaded, setLoaded] = useState(false)
+  const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isInitialLoad = useRef(true)
 
-  // Load from localStorage on mount
+  // Load from server on mount
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored) as TournamentState
-        if (parsed.tournaments && parsed.tournaments.length > 0) {
-          dispatch({ type: "LOAD_STATE", payload: parsed })
+    fetch("/api/tournament")
+      .then((res) => res.json())
+      .then((data: TournamentState) => {
+        if (data.tournaments && data.tournaments.length > 0) {
+          dispatch({ type: "LOAD_STATE", payload: data })
         }
-      }
-    } catch {
-      // If parsing fails, keep the blank state
-    }
+        isInitialLoad.current = false
+        setLoaded(true)
+      })
+      .catch(() => {
+        isInitialLoad.current = false
+        setLoaded(true)
+      })
   }, [])
 
-  // Persist to localStorage on every state change
+  // Persist to server on state change (debounced, skip initial load)
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-    } catch {
-      // localStorage might be full or unavailable
+    if (!loaded || isInitialLoad.current) return
+    if (saveTimeout.current) clearTimeout(saveTimeout.current)
+    saveTimeout.current = setTimeout(() => {
+      fetch("/api/tournament", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(state),
+      }).catch(() => {
+        // Silent fail on persist
+      })
+    }, 300)
+    return () => {
+      if (saveTimeout.current) clearTimeout(saveTimeout.current)
     }
-  }, [state])
+  }, [state, loaded])
 
   const tournament = state.tournaments[0]
 
   const reset = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY)
     dispatch({ type: "RESET" })
   }, [])
+
+  if (!loaded) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-muted-foreground text-sm">Loading tournament data...</div>
+      </div>
+    )
+  }
 
   return (
     <TournamentContext.Provider
