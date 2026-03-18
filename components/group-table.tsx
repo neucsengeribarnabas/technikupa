@@ -30,24 +30,24 @@ export function GroupTable({ group, teams, matches, tournamentId, compact }: Gro
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b bg-muted/50">
-              <th className="px-3 py-2 text-left font-medium text-muted-foreground" title="Position">#</th>
-              <th className="px-3 py-2 text-left font-medium text-muted-foreground">Team</th>
-              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Played">P</th>
-              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Won">W</th>
+              <th className="px-3 py-2 text-left font-medium text-muted-foreground" title="Helyezés">#</th>
+              <th className="px-3 py-2 text-left font-medium text-muted-foreground">Csapat</th>
+              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Lejátszott">M</th>
+              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Győzelem">GY</th>
               {!compact && (
-                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Drawn">D</th>
+                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Döntetlen">D</th>
               )}
               {!compact && (
-                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Lost">L</th>
+                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Vereség">V</th>
               )}
               {!compact && (
-                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Goals For">GF</th>
+                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Rúgott gól">RG</th>
               )}
               {!compact && (
-                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Goals Against">GA</th>
+                <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Kapott gól">KG</th>
               )}
-              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Goal Difference">GD</th>
-              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Points">Pts</th>
+              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Gólkülönbség">GK</th>
+              <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Pont">P</th>
             </tr>
           </thead>
           <tbody>
@@ -100,11 +100,11 @@ export function GroupTable({ group, teams, matches, tournamentId, compact }: Gro
         <div className="flex items-center gap-4 border-t px-4 py-2 text-[10px] text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-qualify-main" />
-            Advances to Main Bracket
+            Továbbjut a főágra
           </span>
           <span className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full bg-qualify-consolation" />
-            Consolation Bracket
+            Vigaszág
           </span>
         </div>
       )}

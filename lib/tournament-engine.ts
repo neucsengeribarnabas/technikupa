@@ -497,11 +497,11 @@ export function getBracketMatches(matches: Match[], stage: MatchStage): Match[] 
 export function getRoundLabel(round: number, totalRounds: number): string {
   const roundsFromEnd = totalRounds - 1 - round
   switch (roundsFromEnd) {
-    case 0: return "Final"
-    case 1: return "Semi-Finals"
-    case 2: return "Quarter-Finals"
-    case 3: return "Round of 16"
-    default: return `Round ${round + 1}`
+    case 0: return "Döntő"
+    case 1: return "Elődöntő"
+    case 2: return "Negyeddöntő"
+    case 3: return "Nyolcaddöntő"
+    default: return `${round + 1}. Forduló`
   }
 }
 

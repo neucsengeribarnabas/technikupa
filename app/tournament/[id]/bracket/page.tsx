@@ -11,12 +11,12 @@ export default function BracketPage({ params }: { params: Promise<{ id: string }
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-8">
-      <h1 className="text-2xl font-bold tracking-tight">Knockout Stage</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Kieséses szakasz</h1>
 
       <Tabs defaultValue="main">
         <TabsList>
-          <TabsTrigger value="main">Championship</TabsTrigger>
-          <TabsTrigger value="consolation">Consolation</TabsTrigger>
+          <TabsTrigger value="main">Főág</TabsTrigger>
+          <TabsTrigger value="consolation">Vigaszág</TabsTrigger>
         </TabsList>
 
         <TabsContent value="main" className="pt-4">
@@ -25,7 +25,7 @@ export default function BracketPage({ params }: { params: Promise<{ id: string }
             teams={tournament.teams}
             tournamentId={tournament.id}
             stage="main"
-            title="Championship Bracket"
+            title="Főág"
           />
         </TabsContent>
 
@@ -35,7 +35,7 @@ export default function BracketPage({ params }: { params: Promise<{ id: string }
             teams={tournament.teams}
             tournamentId={tournament.id}
             stage="consolation"
-            title="Consolation Bracket"
+            title="Vigaszág"
           />
         </TabsContent>
       </Tabs>

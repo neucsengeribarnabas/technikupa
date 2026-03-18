@@ -13,6 +13,18 @@ interface BracketViewProps {
   title: string
 }
 
+// Hungarian translations for round labels
+function getHungarianRoundLabel(round: number, totalRounds: number): string {
+  const roundsFromEnd = totalRounds - 1 - round
+  switch (roundsFromEnd) {
+    case 0: return "Döntő"
+    case 1: return "Elődöntő"
+    case 2: return "Negyeddöntő"
+    case 3: return "Nyolcaddöntő"
+    default: return `${round + 1}. Forduló`
+  }
+}
+
 export function BracketView({ matches, teams, tournamentId, stage, title }: BracketViewProps) {
   const bracketMatches = matches
     .filter((m) => m.stage === stage && !m.id.includes("3rd"))
@@ -27,7 +39,7 @@ export function BracketView({ matches, teams, tournamentId, stage, title }: Brac
   if (bracketMatches.length === 0) {
     return (
       <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-        No bracket matches yet. Complete the group stage first.
+        Még nincsenek kieséses mérkőzések. Először fejezd be a csoportkört.
       </div>
     )
   }
@@ -46,41 +58,100 @@ export function BracketView({ matches, teams, tournamentId, stage, title }: Brac
     <div className="space-y-6">
       <h3 className="text-lg font-bold">{title}</h3>
 
-      {/* Desktop bracket view */}
+      {/* Desktop bracket view with curly brace connectors */}
       <div className="hidden overflow-x-auto md:block">
-        <div className="flex items-start gap-8 pb-4" style={{ minWidth: `${totalRounds * 220}px` }}>
+        <div 
+          className="inline-flex items-start gap-4 pb-4" 
+          style={{ minWidth: `${totalRounds * 240}px` }}
+        >
           {Array.from(rounds.entries())
             .sort(([a], [b]) => a - b)
-            .map(([round, roundMatches]) => {
-              const label = getRoundLabel(round, totalRounds)
+            .map(([round, roundMatches], roundIndex) => {
+              const label = getHungarianRoundLabel(round, totalRounds)
               // Spacing increases with each round to align vertically
               const gapMultiplier = Math.pow(2, round)
+              const isFirstRound = round === 0
+              const isLastRound = roundIndex === rounds.size - 1
 
               return (
-                <div key={round} className="flex flex-col items-center gap-2">
-                  <span className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <div key={round} className="flex flex-col items-center">
+                  <span className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     {label}
                   </span>
                   <div
                     className="flex flex-col justify-around"
                     style={{
-                      gap: `${gapMultiplier * 2}rem`,
-                      paddingTop: `${(gapMultiplier - 1) * 1.5}rem`,
+                      gap: `${gapMultiplier * 2.5}rem`,
+                      paddingTop: `${(gapMultiplier - 1) * 1.75}rem`,
                     }}
                   >
-                    {roundMatches.map((match) => (
-                      <div key={match.id} className="relative">
+                    {roundMatches.map((match, matchIndex) => (
+                      <div key={match.id} className="relative flex items-center">
+                        {/* Curly brace connector from previous round (left side) */}
+                        {!isFirstRound && (
+                          <div className="absolute -left-4 top-1/2 -translate-y-1/2">
+                            <svg 
+                              width="16" 
+                              height="24" 
+                              viewBox="0 0 16 24" 
+                              className="text-border"
+                            >
+                              <path
+                                d="M16 12 L8 12 C4 12 4 12 4 6 L4 0 M4 24 L4 18 C4 12 4 12 8 12"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                          </div>
+                        )}
+                        
                         <BracketMatchCard
                           match={match}
                           teams={teams}
                           tournamentId={tournamentId}
                         />
-                        {/* Connector line to next round */}
-                        {match.nextMatchId && (
-                          <div
-                            className="absolute right-0 top-1/2 h-px w-8 -translate-y-1/2 bg-border"
-                            style={{ left: "100%" }}
-                          />
+                        
+                        {/* Curly brace connector to next round (right side) */}
+                        {match.nextMatchId && !isLastRound && (
+                          <div className="absolute -right-4 top-1/2 -translate-y-1/2">
+                            {matchIndex % 2 === 0 ? (
+                              // Top match of pair - curly brace going down
+                              <svg 
+                                width="16" 
+                                height="60" 
+                                viewBox="0 0 16 60" 
+                                className="text-border"
+                                style={{ transform: 'translateY(25%)' }}
+                              >
+                                <path
+                                  d="M0 12 L8 12 C12 12 12 20 12 30 L12 30"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            ) : (
+                              // Bottom match of pair - curly brace going up
+                              <svg 
+                                width="16" 
+                                height="60" 
+                                viewBox="0 0 16 60" 
+                                className="text-border"
+                                style={{ transform: 'translateY(-75%)' }}
+                              >
+                                <path
+                                  d="M0 48 L8 48 C12 48 12 40 12 30 L12 30"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                />
+                              </svg>
+                            )}
+                          </div>
                         )}
                       </div>
                     ))}
@@ -96,7 +167,7 @@ export function BracketView({ matches, teams, tournamentId, stage, title }: Brac
         {Array.from(rounds.entries())
           .sort(([a], [b]) => a - b)
           .map(([round, roundMatches]) => {
-            const label = getRoundLabel(round, totalRounds)
+            const label = getHungarianRoundLabel(round, totalRounds)
             return (
               <div key={round} className="space-y-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -122,7 +193,7 @@ export function BracketView({ matches, teams, tournamentId, stage, title }: Brac
       {thirdPlaceMatch && (
         <div className="space-y-2">
           <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {stage === "main" ? "3rd Place Match" : "11th Place Match"}
+            {stage === "main" ? "Bronzmérkőzés" : "11. helyért"}
           </span>
           <BracketMatchCard
             match={thirdPlaceMatch}

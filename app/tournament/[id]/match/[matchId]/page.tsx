@@ -20,7 +20,7 @@ export default function MatchDetailPage({
   if (!match) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-muted-foreground">Match not found.</p>
+        <p className="text-muted-foreground">Mérkőzés nem található.</p>
       </div>
     )
   }
@@ -34,17 +34,17 @@ export default function MatchDetailPage({
 
   const stageLabel =
     match.stage === "group"
-      ? `Group Stage${match.groupId ? ` - ${tournament.groups.find((g) => g.id === match.groupId)?.name}` : ""}`
+      ? `Csoportkör${match.groupId ? ` - ${tournament.groups.find((g) => g.id === match.groupId)?.name}` : ""}`
       : match.stage === "main"
-        ? "Championship Bracket"
-        : "Consolation Bracket"
+        ? "Főág"
+        : "Vigaszág"
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
       <Link href={match.stage === "group" ? `/tournament/${id}/groups` : `/tournament/${id}/bracket`}>
         <Button variant="ghost" size="sm" className="text-muted-foreground">
           <ArrowLeft className="mr-1 h-4 w-4" />
-          {match.stage === "group" ? "Back to Groups" : "Back to Bracket"}
+          {match.stage === "group" ? "Vissza a csoportokhoz" : "Vissza az ágrajzhoz"}
         </Button>
       </Link>
 
@@ -52,7 +52,7 @@ export default function MatchDetailPage({
       <div className="space-y-1">
         <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {stageLabel}
-          {match.matchday && ` / Matchday ${match.matchday}`}
+          {match.matchday && ` / ${match.matchday}. Játéknap`}
         </p>
         <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
           {match.matchDate && (
@@ -119,10 +119,10 @@ export default function MatchDetailPage({
               )}
             >
               {match.status === "completed"
-                ? "Full Time"
+                ? "Vége"
                 : match.status === "in_progress"
-                  ? "Live"
-                  : "Scheduled"}
+                  ? "Élő"
+                  : "Tervezett"}
             </span>
           </div>
 
@@ -153,11 +153,11 @@ export default function MatchDetailPage({
       {/* Match stats */}
       {isCompleted && (
         <div className="space-y-3 rounded-lg border bg-card p-4">
-          <h3 className="text-sm font-semibold">Match Details</h3>
+          <h3 className="text-sm font-semibold">Mérkőzés részletei</h3>
           <div className="space-y-2">
             {[
-              { label: "Yellow Cards", home: match.homeYellowCards ?? 0, away: match.awayYellowCards ?? 0 },
-              { label: "Red Cards", home: match.homeRedCards ?? 0, away: match.awayRedCards ?? 0 },
+              { label: "Sárga lap", home: match.homeYellowCards ?? 0, away: match.awayYellowCards ?? 0 },
+              { label: "Piros lap", home: match.homeRedCards ?? 0, away: match.awayRedCards ?? 0 },
             ].map((stat) => (
               <div key={stat.label} className="flex items-center justify-between text-sm">
                 <span className="font-mono">{stat.home}</span>
