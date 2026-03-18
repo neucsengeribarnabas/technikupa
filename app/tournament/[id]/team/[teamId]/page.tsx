@@ -21,7 +21,7 @@ export default function TeamDetailPage({
   if (!team) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-muted-foreground">Team not found.</p>
+        <p className="text-muted-foreground">Csapat nem található.</p>
       </div>
     )
   }
@@ -59,7 +59,7 @@ export default function TeamDetailPage({
       <Link href={`/tournament/${id}/groups`}>
         <Button variant="ghost" size="sm" className="text-muted-foreground">
           <ArrowLeft className="mr-1 h-4 w-4" />
-          Back to Groups
+          Vissza a csoportokhoz
         </Button>
       </Link>
 
@@ -77,12 +77,12 @@ export default function TeamDetailPage({
       {/* Stats grid */}
       <div className="grid grid-cols-3 gap-3 md:grid-cols-6">
         {[
-          { label: "Played", value: wins + draws + losses },
-          { label: "Won", value: wins },
-          { label: "Drawn", value: draws },
-          { label: "Lost", value: losses },
-          { label: "GF", value: goalsFor },
-          { label: "GA", value: goalsAgainst },
+          { label: "Meccs", value: wins + draws + losses },
+          { label: "Győzelem", value: wins },
+          { label: "Döntetlen", value: draws },
+          { label: "Vereség", value: losses },
+          { label: "RG", value: goalsFor },
+          { label: "KG", value: goalsAgainst },
         ].map((stat) => (
           <div key={stat.label} className="rounded-lg border bg-card p-3 text-center">
             <p className="text-xl font-bold">{stat.value}</p>
@@ -94,7 +94,7 @@ export default function TeamDetailPage({
       {/* Group stage matches */}
       {groupMatches.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-lg font-semibold">Group Stage</h2>
+          <h2 className="text-lg font-semibold">Csoportkör</h2>
           <div className="space-y-2">
             {groupMatches.map((match) => (
               <MatchCard
@@ -111,7 +111,7 @@ export default function TeamDetailPage({
       {/* Bracket matches */}
       {bracketMatches.length > 0 && (
         <div className="space-y-3">
-          <h2 className="text-lg font-semibold">Knockout Stage</h2>
+          <h2 className="text-lg font-semibold">Kieséses szakasz</h2>
           <div className="space-y-2">
             {bracketMatches.map((match) => (
               <MatchCard
@@ -129,7 +129,5 @@ export default function TeamDetailPage({
 }
 
 function getOrdinal(n: number): string {
-  const s = ["th", "st", "nd", "rd"]
-  const v = n % 100
-  return n + (s[(v - 20) % 10] || s[v] || s[0])
+  return `${n}. hely`
 }

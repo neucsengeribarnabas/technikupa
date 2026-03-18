@@ -19,15 +19,15 @@ export function NavBar() {
   const tid = tournament.id
 
   const publicLinks = [
-    { href: "/", label: "Home" },
-    { href: `/tournament/${tid}`, label: "Overview" },
-    { href: `/tournament/${tid}/groups`, label: "Groups" },
-    { href: `/tournament/${tid}/bracket`, label: "Bracket" },
-    { href: `/tournament/${tid}/standings`, label: "Standings" },
+    { href: "/", label: "Főoldal" },
+    { href: `/tournament/${tid}`, label: "Áttekintés" },
+    { href: `/tournament/${tid}/groups`, label: "Csoportok" },
+    { href: `/tournament/${tid}/bracket`, label: "Ágrajz" },
+    { href: `/tournament/${tid}/standings`, label: "Végeredmény" },
   ]
 
   const adminLinks = [
-    { href: "/admin", label: "Manage" },
+    { href: "/admin", label: "Kezelés" },
   ]
 
   const links = isAdmin ? adminLinks : publicLinks
@@ -84,12 +84,12 @@ export function NavBar() {
               <Link href="/">
                 <Button variant="outline" size="sm" className="hidden md:flex">
                   <LayoutDashboard className="mr-1.5 h-3.5 w-3.5" />
-                  Public View
+                  Nyilvános nézet
                 </Button>
               </Link>
               <Button variant="ghost" size="sm" className="hidden md:flex" onClick={handleLogout}>
                 <LogOut className="mr-1.5 h-3.5 w-3.5" />
-                Logout
+                Kijelentkezés
               </Button>
             </>
           )}
@@ -133,14 +133,14 @@ export function NavBar() {
                   className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
                 >
                   <LayoutDashboard className="h-3.5 w-3.5" />
-                  Public View
+                  Nyilvános nézet
                 </Link>
                 <button
                   onClick={() => { setMobileOpen(false); handleLogout() }}
                   className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
                 >
                   <LogOut className="h-3.5 w-3.5" />
-                  Logout
+                  Kijelentkezés
                 </button>
               </>
             )}

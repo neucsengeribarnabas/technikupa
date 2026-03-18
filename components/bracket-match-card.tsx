@@ -45,7 +45,7 @@ export function BracketMatchCard({ match, teams, tournamentId, className }: Brac
               </span>
             </>
           ) : (
-            <span className="text-xs text-muted-foreground">TBD</span>
+            <span className="text-xs text-muted-foreground">-</span>
           )}
         </div>
         <span className={cn("font-mono text-xs font-bold", homeWon && "text-accent")}>
@@ -69,7 +69,7 @@ export function BracketMatchCard({ match, teams, tournamentId, className }: Brac
               </span>
             </>
           ) : (
-            <span className="text-xs text-muted-foreground">TBD</span>
+            <span className="text-xs text-muted-foreground">-</span>
           )}
         </div>
         <span className={cn("font-mono text-xs font-bold", awayWon && "text-accent")}>

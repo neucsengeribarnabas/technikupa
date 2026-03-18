@@ -28,16 +28,16 @@ export default function TournamentOverviewPage({ params }: { params: Promise<{ i
 
       <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="groups">Groups</TabsTrigger>
-          <TabsTrigger value="bracket">Bracket</TabsTrigger>
+          <TabsTrigger value="overview">Áttekintés</TabsTrigger>
+          <TabsTrigger value="groups">Csoportok</TabsTrigger>
+          <TabsTrigger value="bracket">Ágrajz</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6 pt-4">
           {/* Recent results */}
           {recentMatches.length > 0 && (
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold">Recent Results</h2>
+              <h2 className="text-lg font-semibold">Legutóbbi eredmények</h2>
               <div className="grid gap-2 md:grid-cols-2">
                 {recentMatches.map((match) => (
                   <MatchCard
@@ -54,7 +54,7 @@ export default function TournamentOverviewPage({ params }: { params: Promise<{ i
           {/* Upcoming matches */}
           {upcomingMatches.length > 0 && (
             <div className="space-y-3">
-              <h2 className="text-lg font-semibold">Upcoming Matches</h2>
+              <h2 className="text-lg font-semibold">Következő mérkőzések</h2>
               <div className="grid gap-2 md:grid-cols-2">
                 {upcomingMatches.map((match) => (
                   <MatchCard
@@ -71,9 +71,9 @@ export default function TournamentOverviewPage({ params }: { params: Promise<{ i
 
         <TabsContent value="groups" className="space-y-4 pt-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Group Standings</h2>
+            <h2 className="text-lg font-semibold">Csoport állás</h2>
             <Link href={`/tournament/${id}/groups`} className="text-sm text-primary hover:underline">
-              Full View <ArrowRight className="ml-1 inline h-3 w-3" />
+              Teljes nézet <ArrowRight className="ml-1 inline h-3 w-3" />
             </Link>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
@@ -95,14 +95,14 @@ export default function TournamentOverviewPage({ params }: { params: Promise<{ i
             teams={tournament.teams}
             tournamentId={tournament.id}
             stage="main"
-            title="Championship Bracket"
+            title="Főág"
           />
           <BracketView
             matches={tournament.matches}
             teams={tournament.teams}
             tournamentId={tournament.id}
             stage="consolation"
-            title="Consolation Bracket"
+            title="Vigaszág"
           />
         </TabsContent>
       </Tabs>

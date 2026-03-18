@@ -12,12 +12,12 @@ export default function GroupsPage({ params }: { params: Promise<{ id: string }>
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-4 py-8">
-      <h1 className="text-2xl font-bold tracking-tight">Group Stage</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Csoportkör</h1>
 
       <Tabs defaultValue="standings">
         <TabsList>
-          <TabsTrigger value="standings">Standings</TabsTrigger>
-          <TabsTrigger value="matches">Matches</TabsTrigger>
+          <TabsTrigger value="standings">Tabella</TabsTrigger>
+          <TabsTrigger value="matches">Mérkőzések</TabsTrigger>
         </TabsList>
 
         <TabsContent value="standings" className="space-y-4 pt-4">
@@ -55,7 +55,7 @@ export default function GroupsPage({ params }: { params: Promise<{ id: string }>
                   .map(([md, matches]) => (
                     <div key={md} className="space-y-2">
                       <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                        Matchday {md}
+                        {md}. Játéknap
                       </p>
                       <div className="grid gap-2 md:grid-cols-2">
                         {matches.map((match) => (

@@ -34,11 +34,11 @@ export default function HomePage() {
         {t.status === "draft" && (
           <div className="rounded-lg border border-primary/30 bg-primary/5 p-4">
             <p className="text-sm text-foreground">
-              Your tournament is in <span className="font-semibold">Draft</span> mode. Head to the{" "}
+              A tornád <span className="font-semibold">Vázlat</span> módban van. Menj az{" "}
               <Link href="/admin" className="text-primary underline underline-offset-2 hover:text-primary/80">
-                Admin Panel
+                Admin Panelre
               </Link>{" "}
-              to rename your teams, then generate group matches to begin.
+              a csapatok átnevezéséhez, majd generáld le a csoportmérkőzéseket a kezdéshez.
             </p>
           </div>
         )}
@@ -51,7 +51,7 @@ export default function HomePage() {
             <Users className="h-8 w-8 text-primary" />
             <div>
               <p className="text-2xl font-bold">{t.teams.length}</p>
-              <p className="text-xs text-muted-foreground">Teams</p>
+              <p className="text-xs text-muted-foreground">Csapat</p>
             </div>
           </CardContent>
         </Card>
@@ -60,7 +60,7 @@ export default function HomePage() {
             <Swords className="h-8 w-8 text-primary" />
             <div>
               <p className="text-2xl font-bold">{t.groups.length}</p>
-              <p className="text-xs text-muted-foreground">Groups</p>
+              <p className="text-xs text-muted-foreground">Csoport</p>
             </div>
           </CardContent>
         </Card>
@@ -69,7 +69,7 @@ export default function HomePage() {
             <Trophy className="h-8 w-8 text-primary" />
             <div>
               <p className="text-2xl font-bold">{completedMatches}/{totalMatches}</p>
-              <p className="text-xs text-muted-foreground">Matches Played</p>
+              <p className="text-xs text-muted-foreground">Lejátszott meccs</p>
             </div>
           </CardContent>
         </Card>
@@ -77,12 +77,14 @@ export default function HomePage() {
           <CardContent className="flex items-center gap-3 p-4">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
               <span className="text-sm font-bold text-primary">
-                {t.status === "group_stage" ? "GS" : t.status === "bracket_stage" ? "KO" : t.status === "completed" ? "FT" : "DR"}
+                {t.status === "group_stage" ? "CS" : t.status === "bracket_stage" ? "KI" : t.status === "completed" ? "VG" : "VZ"}
               </span>
             </div>
             <div>
-              <p className="text-sm font-bold capitalize">{t.status.replace("_", " ")}</p>
-              <p className="text-xs text-muted-foreground">Stage</p>
+              <p className="text-sm font-bold capitalize">
+                {t.status === "group_stage" ? "Csoportkör" : t.status === "bracket_stage" ? "Kieséses" : t.status === "completed" ? "Befejezett" : "Vázlat"}
+              </p>
+              <p className="text-xs text-muted-foreground">Szakasz</p>
             </div>
           </CardContent>
         </Card>
@@ -94,13 +96,13 @@ export default function HomePage() {
           <Card className="cursor-pointer transition-colors hover:bg-secondary/50">
             <CardHeader className="p-4">
               <CardTitle className="flex items-center justify-between text-sm">
-                Group Standings
+                Csoport állás
                 <ArrowRight className="h-4 w-4" />
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
               <p className="text-xs text-muted-foreground">
-                {groupMatches.filter((m) => m.status === "completed").length}/{groupMatches.length} group matches completed
+                {groupMatches.filter((m) => m.status === "completed").length}/{groupMatches.length} csoportmeccs lejátszva
               </p>
             </CardContent>
           </Card>
@@ -109,13 +111,13 @@ export default function HomePage() {
           <Card className="cursor-pointer transition-colors hover:bg-secondary/50">
             <CardHeader className="p-4">
               <CardTitle className="flex items-center justify-between text-sm">
-                Brackets
+                Ágrajz
                 <ArrowRight className="h-4 w-4" />
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
               <p className="text-xs text-muted-foreground">
-                {bracketMatches.filter((m) => m.status === "completed").length}/{bracketMatches.length} bracket matches completed
+                {bracketMatches.filter((m) => m.status === "completed").length}/{bracketMatches.length} kieséses meccs lejátszva
               </p>
             </CardContent>
           </Card>
@@ -124,13 +126,13 @@ export default function HomePage() {
           <Card className="cursor-pointer transition-colors hover:bg-secondary/50">
             <CardHeader className="p-4">
               <CardTitle className="flex items-center justify-between text-sm">
-                Final Placements
+                Végeredmény
                 <ArrowRight className="h-4 w-4" />
               </CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
               <p className="text-xs text-muted-foreground">
-                {t.status === "completed" ? "View final results" : "In progress"}
+                {t.status === "completed" ? "Végeredmény megtekintése" : "Folyamatban"}
               </p>
             </CardContent>
           </Card>
@@ -141,9 +143,9 @@ export default function HomePage() {
       {groupMatches.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold">Group Standings</h2>
+            <h2 className="text-xl font-bold">Csoport állás</h2>
             <Link href={`/tournament/${t.id}/groups`} className="text-sm text-primary hover:underline">
-              View all
+              Összes megtekintése
             </Link>
           </div>
           <div className="grid gap-4 md:grid-cols-2">

@@ -287,12 +287,12 @@ export default function AdminPage() {
 
   const statusLabel =
     tournament.status === "group_stage"
-      ? "Group Stage"
+      ? "Csoportkör"
       : tournament.status === "bracket_stage"
-        ? "Bracket Stage"
+        ? "Kieséses szakasz"
         : tournament.status === "completed"
-          ? "Completed"
-          : "Draft"
+          ? "Befejezett"
+          : "Vázlat"
 
   const mainBracketMatches = bracketMatches.filter((m) => m.stage === "main")
   const consolationBracketMatches = bracketMatches.filter((m) => m.stage === "consolation")
@@ -368,7 +368,7 @@ export default function AdminPage() {
         {Array.from(rounds.entries())
           .sort(([a], [b]) => a - b)
           .map(([round, matches]) => renderBracketRound(matches, getRoundLabel(round, totalRounds)))}
-        {thirdPlaceMatches.length > 0 && renderBracketRound(thirdPlaceMatches, "3rd Place Match")}
+        {thirdPlaceMatches.length > 0 && renderBracketRound(thirdPlaceMatches, "Bronzmérkőzés")}
       </div>
     )
   }
@@ -407,20 +407,20 @@ export default function AdminPage() {
               <Badge variant={tournament.status === "completed" ? "default" : tournament.status === "draft" ? "outline" : "secondary"}>
                 {statusLabel}
               </Badge>
-              {tournament.groupStageLocked && <Badge variant="outline">Groups Locked</Badge>}
+              {tournament.groupStageLocked && <Badge variant="outline">Csoportok lezárva</Badge>}
             </div>
           </div>
           <Link href={`/tournament/${tournament.id}`}>
-            <Button variant="outline">View Public Page</Button>
+            <Button variant="outline">Nyilvános oldal</Button>
           </Link>
         </div>
 
         <Tabs defaultValue="teams">
           <TabsList className="mb-6 flex-wrap">
-            <TabsTrigger value="teams">Teams & Groups</TabsTrigger>
-            <TabsTrigger value="group-matches">Group Matches</TabsTrigger>
-            <TabsTrigger value="knockout">Knockout</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="teams">Csapatok & Csoportok</TabsTrigger>
+            <TabsTrigger value="group-matches">Csoportmeccsek</TabsTrigger>
+            <TabsTrigger value="knockout">Kieséses</TabsTrigger>
+            <TabsTrigger value="settings">Beállítások</TabsTrigger>
           </TabsList>
 
           {/* Teams & Groups Tab */}
@@ -439,10 +439,10 @@ export default function AdminPage() {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Logo</TableHead>
-                            <TableHead>Abbr</TableHead>
-                            <TableHead>Team Name</TableHead>
-                            <TableHead>Group</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead>Röv.</TableHead>
+                            <TableHead>Csapatnév</TableHead>
+                            <TableHead>Csoport</TableHead>
+                            <TableHead className="text-right">Műveletek</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -545,12 +545,12 @@ export default function AdminPage() {
                 <Card>
                   <CardContent className="flex items-center justify-between py-6">
                     <div>
-                      <h3 className="font-semibold text-foreground">Generate Group Stage Fixtures</h3>
-                      <p className="text-sm text-muted-foreground">Create round-robin matches for all groups.</p>
+                      <h3 className="font-semibold text-foreground">Csoportmérkőzések generálása</h3>
+                      <p className="text-sm text-muted-foreground">Körmeccsek létrehozása minden csoportban.</p>
                     </div>
                     <Button onClick={generateGroupMatchesForTournament}>
                       <Play className="mr-2 h-4 w-4" />
-                      Generate Matches
+                      Meccsek generálása
                     </Button>
                   </CardContent>
                 </Card>
@@ -564,19 +564,19 @@ export default function AdminPage() {
                         <div>
                           <h3 className="font-semibold text-foreground flex items-center gap-2">
                             <Trophy className="h-5 w-5 text-primary" />
-                            All group matches complete!
+                            Minden csoportmeccs lejátszva!
                           </h3>
-                          <p className="text-sm text-muted-foreground">Ready to advance to the knockout stage.</p>
+                          <p className="text-sm text-muted-foreground">Készen áll a kieséses szakaszra.</p>
                         </div>
                         <Dialog open={confirmAdvance} onOpenChange={setConfirmAdvance}>
                           <DialogTrigger asChild>
-                            <Button>Advance to Knockout</Button>
+                            <Button>Tovább a kiesésesre</Button>
                           </DialogTrigger>
                           <DialogContent>
                             <DialogHeader>
-                              <DialogTitle>Advance to Knockout Stage?</DialogTitle>
+                              <DialogTitle>Továbblépés a kieséses szakaszra?</DialogTitle>
                               <DialogDescription>
-                                This will lock group results and generate the knockout bracket. Top 2 teams from each group advance to the main bracket, 3rd and 4th to consolation.
+                                Ez lezárja a csoporteredményeket és legenerálja a kieséses ágrajzot. Az első 2 csapat a főágra, a 3. és 4. a vigaszágra kerül.
                               </DialogDescription>
                             </DialogHeader>
                             <div className="space-y-3 my-4">
@@ -594,8 +594,8 @@ export default function AdminPage() {
                               ))}
                             </div>
                             <DialogFooter>
-                              <Button variant="outline" onClick={() => setConfirmAdvance(false)}>Cancel</Button>
-                              <Button onClick={handleAdvanceToKnockout}>Confirm & Generate Bracket</Button>
+                              <Button variant="outline" onClick={() => setConfirmAdvance(false)}>Mégse</Button>
+                              <Button onClick={handleAdvanceToKnockout}>Megerősítés és ágrajz generálása</Button>
                             </DialogFooter>
                           </DialogContent>
                         </Dialog>
@@ -609,7 +609,7 @@ export default function AdminPage() {
                     return (
                       <Card key={group.id}>
                         <CardHeader>
-                          <CardTitle className="text-lg">{group.name} Matches</CardTitle>
+                          <CardTitle className="text-lg">{group.name} mérkőzései</CardTitle>
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-2">
@@ -659,7 +659,7 @@ export default function AdminPage() {
               {groupMatches.length === 0 && !canGenerateGroupMatches && (
                 <Card>
                   <CardContent className="py-12 text-center">
-                    <p className="text-muted-foreground">Add at least 2 teams per group to generate matches.</p>
+                    <p className="text-muted-foreground">Adj hozzá legalább 2 csapatot csoportonként a meccsek generálásához.</p>
                   </CardContent>
                 </Card>
               )}
@@ -672,14 +672,14 @@ export default function AdminPage() {
               <Card>
                 <CardContent className="py-12 text-center">
                   <Trophy className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Knockout stage not started</h3>
-                  <p className="text-muted-foreground">Complete all group matches first, then advance to the knockout stage.</p>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Kieséses szakasz még nem indult</h3>
+                  <p className="text-muted-foreground">Először játszd le az összes csoportmeccset, majd lépj tovább a kieséses szakaszra.</p>
                 </CardContent>
               </Card>
             ) : (
               <div className="space-y-8">
-                {renderBracketSection(mainBracketMatches, "Championship Bracket")}
-                {renderBracketSection(consolationBracketMatches, "Consolation Bracket")}
+                {renderBracketSection(mainBracketMatches, "Főág")}
+                {renderBracketSection(consolationBracketMatches, "Vigaszág")}
               </div>
             )}
           </TabsContent>
@@ -690,8 +690,8 @@ export default function AdminPage() {
               {/* Site Logo */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Site Logo</CardTitle>
-                  <CardDescription>Upload a logo for the tournament site (shown in the navbar)</CardDescription>
+                  <CardTitle>Weboldal logó</CardTitle>
+                  <CardDescription>Tölts fel logót a torna weboldalához (megjelenik a navigációs sávban)</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-4">
@@ -719,7 +719,7 @@ export default function AdminPage() {
                       onClick={() => siteLogoInputRef.current?.click()}
                     >
                       <Upload className="mr-1.5 h-3.5 w-3.5" />
-                      {uploading === "site" ? "Uploading..." : "Upload Logo"}
+                      {uploading === "site" ? "Feltöltés..." : "Logó feltöltése"}
                     </Button>
                   </div>
                 </CardContent>
@@ -728,48 +728,48 @@ export default function AdminPage() {
               {/* Tournament Settings */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Tournament Settings</CardTitle>
-                  <CardDescription>View tournament details and manage settings</CardDescription>
+                  <CardTitle>Torna beállítások</CardTitle>
+                  <CardDescription>Torna adatok megtekintése és beállítások kezelése</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label>Teams</Label>
+                      <Label>Csapatok</Label>
                       <p className="text-sm text-foreground">{tournament.teams.length}</p>
                     </div>
                     <div className="space-y-2">
-                      <Label>Groups</Label>
+                      <Label>Csoportok</Label>
                       <p className="text-sm text-foreground">{tournament.groups.length}</p>
                     </div>
                     <div className="space-y-2">
-                      <Label>Matches</Label>
+                      <Label>Meccsek</Label>
                       <p className="text-sm text-foreground">{tournament.matches.length}</p>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label>Status</Label>
+                      <Label>Állapot</Label>
                       <p className="text-sm text-foreground">{statusLabel}</p>
                     </div>
                     <div className="space-y-2">
-                      <Label>Groups Locked</Label>
-                      <p className="text-sm text-foreground">{tournament.groupStageLocked ? "Yes" : "No"}</p>
+                      <Label>Csoportok lezárva</Label>
+                      <p className="text-sm text-foreground">{tournament.groupStageLocked ? "Igen" : "Nem"}</p>
                     </div>
                   </div>
                   <div className="pt-4 border-t border-border">
-                    <h4 className="text-sm font-medium text-foreground mb-3">Danger Zone</h4>
+                    <h4 className="text-sm font-medium text-foreground mb-3">Veszélyes zóna</h4>
                     <Dialog open={confirmReset} onOpenChange={setConfirmReset}>
                       <DialogTrigger asChild>
-                        <Button variant="destructive" size="sm">Reset Tournament</Button>
+                        <Button variant="destructive" size="sm">Torna visszaállítása</Button>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle>Reset Tournament?</DialogTitle>
-                          <DialogDescription>This will delete all teams, matches, and scores and start fresh with a blank tournament. This action cannot be undone.</DialogDescription>
+                          <DialogTitle>Torna visszaállítása?</DialogTitle>
+                          <DialogDescription>Ez törli az összes csapatot, meccset és eredményt, és üres tornával kezd újra. Ez a művelet nem vonható vissza.</DialogDescription>
                         </DialogHeader>
                         <DialogFooter>
-                          <Button variant="outline" onClick={() => setConfirmReset(false)}>Cancel</Button>
-                          <Button variant="destructive" onClick={() => { reset(); setConfirmReset(false) }}>Reset Everything</Button>
+                          <Button variant="outline" onClick={() => setConfirmReset(false)}>Mégse</Button>
+                          <Button variant="destructive" onClick={() => { reset(); setConfirmReset(false) }}>Minden törlése</Button>
                         </DialogFooter>
                       </DialogContent>
                     </Dialog>
@@ -784,7 +784,7 @@ export default function AdminPage() {
         <Dialog open={!!scoreDialog} onOpenChange={(open) => !open && setScoreDialog(null)}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
-              <DialogTitle>Edit Match</DialogTitle>
+              <DialogTitle>Mérkőzés szerkesztése</DialogTitle>
               <DialogDescription>
                 {scoreDialog && `${getTeamName(scoreDialog.homeTeamId)} vs ${getTeamName(scoreDialog.awayTeamId)}`}
               </DialogDescription>
@@ -792,7 +792,7 @@ export default function AdminPage() {
             <div className="space-y-6 py-4">
               {/* Score */}
               <div>
-                <Label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Score</Label>
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Eredmény</Label>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1 text-center">
                     <Label className="text-xs">{scoreDialog && getTeamName(scoreDialog.homeTeamId)}</Label>
@@ -807,7 +807,7 @@ export default function AdminPage() {
 
               {/* Cards */}
               <div>
-                <Label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Cards</Label>
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Lapok</Label>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
@@ -834,38 +834,38 @@ export default function AdminPage() {
 
               {/* Date / Time / Field */}
               <div>
-                <Label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Schedule</Label>
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground mb-2 block">Időpont</Label>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1">
-                    <Label className="text-xs">Date</Label>
+                    <Label className="text-xs">Dátum</Label>
                     <Input type="date" value={matchDate} onChange={(e) => setMatchDate(e.target.value)} className="h-8" />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Time</Label>
+                    <Label className="text-xs">Idő</Label>
                     <Input type="time" value={matchTime} onChange={(e) => setMatchTime(e.target.value)} className="h-8" />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-xs">Field</Label>
-                    <Input type="text" value={matchField} onChange={(e) => setMatchField(e.target.value)} placeholder="Field name" className="h-8" />
+                    <Label className="text-xs">Pálya</Label>
+                    <Input type="text" value={matchField} onChange={(e) => setMatchField(e.target.value)} placeholder="Pálya neve" className="h-8" />
                   </div>
                 </div>
               </div>
 
               {/* Comment */}
               <div className="space-y-1">
-                <Label className="text-xs uppercase tracking-wider text-muted-foreground">Comment</Label>
+                <Label className="text-xs uppercase tracking-wider text-muted-foreground">Megjegyzés</Label>
                 <Textarea
                   value={matchComment}
                   onChange={(e) => setMatchComment(e.target.value)}
-                  placeholder="Optional comment about this match..."
+                  placeholder="Opcionális megjegyzés a mérkőzéshez..."
                   rows={2}
                 />
               </div>
             </div>
             <DialogFooter className="gap-2">
-              <Button variant="outline" onClick={() => setScoreDialog(null)}>Cancel</Button>
-              <Button variant="secondary" onClick={handleSaveMatchInfo}>Save Info Only</Button>
-              <Button onClick={handleSaveScore}>Save & Complete</Button>
+              <Button variant="outline" onClick={() => setScoreDialog(null)}>Mégse</Button>
+              <Button variant="secondary" onClick={handleSaveMatchInfo}>Csak infó mentése</Button>
+              <Button onClick={handleSaveScore}>Mentés és befejezés</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

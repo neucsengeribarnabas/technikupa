@@ -10,9 +10,9 @@ export default function StandingsPage({ params }: { params: Promise<{ id: string
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-8">
-      <h1 className="text-2xl font-bold tracking-tight">Final Placements</h1>
+      <h1 className="text-2xl font-bold tracking-tight">Végeredmény</h1>
       <p className="text-sm text-muted-foreground">
-        Final standings are determined by bracket results. Complete all bracket matches to see the full 1st-16th placement.
+        A végső helyezéseket az ágrajz eredményei határozzák meg. Játszd le az összes kieséses mérkőzést a teljes 1-16. helyezés megtekintéséhez.
       </p>
       <FinalStandings tournament={tournament} />
     </div>

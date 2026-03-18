@@ -56,7 +56,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
               )}
             </>
           ) : (
-            <span className="text-sm text-muted-foreground">TBD</span>
+            <span className="text-sm text-muted-foreground">-</span>
           )}
         </div>
 
@@ -84,7 +84,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
               />
             </>
           ) : (
-            <span className="text-sm text-muted-foreground">TBD</span>
+            <span className="text-sm text-muted-foreground">-</span>
           )}
         </div>
       </div>
@@ -96,7 +96,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
               isCompleted ? "text-muted-foreground" : "text-primary",
             )}
           >
-            {match.status === "completed" ? "Full Time" : match.status === "in_progress" ? "Live" : "Scheduled"}
+            {match.status === "completed" ? "Vége" : match.status === "in_progress" ? "Élő" : "Tervezett"}
           </span>
           {(match.matchDate || match.matchTime || match.field) && (
             <span className="text-[10px] text-muted-foreground">

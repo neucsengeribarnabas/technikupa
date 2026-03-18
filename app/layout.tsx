@@ -9,25 +9,12 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Tournament Manager',
-  description: 'Full-featured tournament management and bracket visualization app with group stages, elimination brackets, and FIFA tie-breaker rules.',
+  title: 'Technikupa - Torna Kezelő',
+  description: 'Teljes funkcionalitású tornakezelő és ágrajz megjelenítő alkalmazás csoportkörökkel, egyenes kieséses szakasszal és FIFA döntetlen szabályokkal.',
   generator: 'v0.app',
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+    icon: '/favicon.jpg',
+    apple: '/favicon.jpg',
   },
 }
 
@@ -37,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="hu" suppressHydrationWarning>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <ClientProviders>

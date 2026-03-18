@@ -24,7 +24,7 @@ export function FinalStandings({ tournament }: FinalStandingsProps) {
   if (placements.length === 0) {
     return (
       <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-        Complete the bracket matches to see final standings.
+        Játszd le a kieséses mérkőzéseket a végeredmény megtekintéséhez.
       </div>
     )
   }
@@ -78,7 +78,5 @@ export function FinalStandings({ tournament }: FinalStandingsProps) {
 }
 
 function getOrdinal(n: number): string {
-  const s = ["th", "st", "nd", "rd"]
-  const v = n % 100
-  return n + (s[(v - 20) % 10] || s[v] || s[0])
+  return `${n}. helyezett`
 }
