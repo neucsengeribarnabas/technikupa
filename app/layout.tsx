@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: 'Teljes funkcionalitású tornakezelő és ágrajz megjelenítő alkalmazás csoportkörökkel, egyenes kieséses szakasszal és FIFA döntetlen szabályokkal.',
   generator: 'v0.app',
   icons: {
-    icon: '/favicon.jpg',
+    icon: '/favicon.jpg?v=1',
     apple: '/favicon.jpg',
   },
 }
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="hu" suppressHydrationWarning>
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <ClientProviders>
             {children}
           </ClientProviders>

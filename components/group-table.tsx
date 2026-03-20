@@ -57,7 +57,6 @@ export function GroupTable({ group, teams, matches, tournamentId, compact }: Gro
                 className={cn(
                   "border-b transition-colors last:border-0 hover:bg-muted/30",
                   s.qualified === "main" && "border-l-2 border-l-qualify-main",
-                  s.qualified === "consolation" && "border-l-2 border-l-qualify-consolation",
                 )}
               >
                 <td className="px-3 py-2 font-mono text-muted-foreground">{s.rank}</td>
@@ -102,10 +101,7 @@ export function GroupTable({ group, teams, matches, tournamentId, compact }: Gro
             <span className="h-2 w-2 rounded-full bg-qualify-main" />
             Továbbjut a főágra
           </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-qualify-consolation" />
-            Vigaszág
-          </span>
+
         </div>
       )}
     </div>

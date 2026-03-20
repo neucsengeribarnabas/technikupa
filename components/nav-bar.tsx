@@ -19,8 +19,7 @@ export function NavBar() {
   const tid = tournament.id
 
   const publicLinks = [
-    { href: "/", label: "Főoldal" },
-    { href: `/tournament/${tid}`, label: "Áttekintés" },
+    { href: `/tournament/${tid}`, label: "Mérkőzések" },
     { href: `/tournament/${tid}/groups`, label: "Csoportok" },
     { href: `/tournament/${tid}/bracket`, label: "Ágrajz" },
     { href: `/tournament/${tid}/standings`, label: "Végeredmény" },
@@ -43,21 +42,17 @@ export function NavBar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          {tournament.siteLogo ? (
-            <Image
-              src={tournament.siteLogo}
-              alt={`${tournament.name} logo`}
-              width={24}
-              height={24}
-              className="h-6 w-6 rounded object-contain"
-            />
-          ) : (
-            <Trophy className="h-5 w-5 text-primary" />
-          )}
+          <Image
+            src="/logo.jpg"
+            alt="logo"
+            width={24}
+            height={24}
+          />
           <span className="text-sm font-bold tracking-tight">
             {tournament.name}
           </span>
         </Link>
+
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-1 md:flex" role="navigation" aria-label="Main navigation">

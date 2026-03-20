@@ -36,7 +36,7 @@ export function calculateGroupStandings(
       points: 0,
       fairPlayScore: 0,
       rank: 0,
-      qualified: null,
+      qualified: "consolation",
     })
   }
 

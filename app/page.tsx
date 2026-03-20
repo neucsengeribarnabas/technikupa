@@ -143,7 +143,7 @@ export default function HomePage() {
       {groupMatches.length > 0 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold">Csoport állás</h2>
+            <h2 className="text-xl font-bold">Tabella</h2>
             <Link href={`/tournament/${t.id}/groups`} className="text-sm text-primary hover:underline">
               Összes megtekintése
             </Link>

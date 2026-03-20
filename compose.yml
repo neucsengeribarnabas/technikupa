@@ -1,13 +1,25 @@
 services:
   tournament-app:
+    container_name: technikupa
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "1524:3000"
+      - "3000:3000"
     environment:
       - NODE_ENV=production
       - ADMIN_USERNAME=${ADMIN_USERNAME}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - ADMIN_SECRET=${ADMIN_SECRET}
-    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+      - ./public:/app/public
+    restart: unless-stopped    
+    networks:
+      - next
+volumes:
+  data:
+
+networks:
+  next:
+    external: true
