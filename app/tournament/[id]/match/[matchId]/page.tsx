@@ -156,8 +156,8 @@ export default function MatchDetailPage({
           <h3 className="text-sm font-semibold">Mérkőzés részletei</h3>
           <div className="space-y-2">
             {[
-              { label: "Sárga lap", home: match.homeYellowCards ?? 0, away: match.awayYellowCards ?? 0 },
-              { label: "Piros lap", home: match.homeRedCards ?? 0, away: match.awayRedCards ?? 0 },
+              { label: "Sárga lap 🟨", home: match.homeYellowCards ?? 0, away: match.awayYellowCards ?? 0 },
+              { label: "Piros lap 🟥", home: match.homeRedCards ?? 0, away: match.awayRedCards ?? 0 },
             ].map((stat) => (
               <div key={stat.label} className="flex items-center justify-between text-sm">
                 <span className="font-mono">{stat.home}</span>

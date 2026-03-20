@@ -96,7 +96,7 @@ export function MatchCard({ match, teams, tournamentId, compact, className }: Ma
               isCompleted ? "text-muted-foreground" : "text-primary",
             )}
           >
-            {match.status === "completed" ? "Vége" : match.status === "in_progress" ? "Élő" : "Tervezett"}
+            {match.status === "completed" ? "Befejezett" : match.status === "in_progress" ? "Élő" : "Tervezett"}
           </span>
           {(match.matchDate || match.matchTime || match.field) && (
             <span className="text-[10px] text-muted-foreground">

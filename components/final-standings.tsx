@@ -24,7 +24,7 @@ export function FinalStandings({ tournament }: FinalStandingsProps) {
   if (placements.length === 0) {
     return (
       <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-        Játszd le a kieséses mérkőzéseket a végeredmény megtekintéséhez.
+        A végeredmények a kieséses szakaszban fognak megjelenni.
       </div>
     )
   }

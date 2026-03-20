@@ -39,7 +39,7 @@ export function BracketView({ matches, teams, tournamentId, stage, title }: Brac
   if (bracketMatches.length === 0) {
     return (
       <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-        Még nincsenek kieséses mérkőzések. Először fejezd be a csoportkört.
+        Még nincsenek kieséses mérkőzések. 
       </div>
     )
   }

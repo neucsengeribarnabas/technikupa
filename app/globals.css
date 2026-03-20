@@ -31,15 +31,15 @@
   --radius: 0.5rem;
 
   /* Group accent colors */
-  --group-a: oklch(0.55 0.18 250);
-  --group-b: oklch(0.60 0.18 155);
-  --group-c: oklch(0.70 0.16 60);
-  --group-d: oklch(0.62 0.20 15);
+  --group-d: oklch(0.65 0.18 250);
+  --group-c: oklch(0.65 0.18 155);
+  --group-b: #b88d23;
+  --group-a: oklch(55.442% 0.20876 20.227);
 
-  --group-a-bg: oklch(0.95 0.04 250);
-  --group-b-bg: oklch(0.95 0.04 155);
-  --group-c-bg: oklch(0.95 0.04 60);
-  --group-d-bg: oklch(0.95 0.04 15);
+  --group-d-bg: oklch(0.95 0.04 250);
+  --group-c-bg: oklch(0.95 0.04 155);
+  --group-b-bg: oklch(96.569% 0.02269 95.99);
+  --group-a-bg: oklch(0.95 0.04 15);
 
   /* Qualification colors */
   --qualify-main: oklch(0.68 0.16 145);
@@ -81,15 +81,15 @@
   --chart-4: oklch(0.60 0.20 350);
   --chart-5: oklch(0.55 0.15 200);
 
-  --group-a: oklch(0.65 0.18 250);
-  --group-b: oklch(0.65 0.18 155);
-  --group-c: oklch(0.75 0.16 60);
-  --group-d: oklch(0.65 0.20 15);
+  --group-d: oklch(0.65 0.18 250);
+  --group-c: oklch(0.65 0.18 155);
+  --group-b: oklch(86.739% 0.16774 95.04);
+  --group-a: oklch(55.442% 0.20876 20.227);
 
-  --group-a-bg: oklch(0.22 0.04 250);
-  --group-b-bg: oklch(0.22 0.04 155);
-  --group-c-bg: oklch(0.22 0.04 60);
-  --group-d-bg: oklch(0.22 0.04 15);
+  --group-d-bg: oklch(0.22 0.04 250);
+  --group-c-bg: oklch(0.22 0.04 155);
+  --group-b-bg: oklch(0.22 0.04 60);
+  --group-a-bg: oklch(0.22 0.04 15);
 
   --qualify-main: oklch(0.68 0.16 145);
   --qualify-consolation: oklch(0.70 0.16 60);

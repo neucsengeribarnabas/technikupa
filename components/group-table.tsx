@@ -31,7 +31,7 @@ export function GroupTable({ group, teams, matches, tournamentId, compact }: Gro
           <thead>
             <tr className="border-b bg-muted/50">
               <th className="px-3 py-2 text-left font-medium text-muted-foreground" title="Helyezés">#</th>
-              <th className="px-3 py-2 text-left font-medium text-muted-foreground">Csapat</th>
+              <th className="px-3 py-2 w-max-3 text-left font-medium text-muted-foreground">Csapat</th>
               <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Lejátszott">M</th>
               <th className="px-3 py-2 text-center font-medium text-muted-foreground" title="Győzelem">GY</th>
               {!compact && (
@@ -101,7 +101,10 @@ export function GroupTable({ group, teams, matches, tournamentId, compact }: Gro
             <span className="h-2 w-2 rounded-full bg-qualify-main" />
             Továbbjut a főágra
           </span>
-
+          <span className="flex items-center gap-3">
+            <span className="h-2 w-2 rounded-full bg-gray" />
+            Továbbjut a vígaszágra 
+          </span>
         </div>
       )}
     </div>
