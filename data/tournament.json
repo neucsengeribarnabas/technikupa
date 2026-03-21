@@ -4,7 +4,7 @@
       "id": "btlb",
       "name": "II. Budapesti Technikumközi Labdarúgó Bajnokság",
       "description": "",
-      "status": "group_stage",
+      "status": "bracket_stage",
       "groups": [
         {
           "id": "group-a",
@@ -167,7 +167,7 @@
           "awayRedCards": 0,
           "matchDate": "2026-03-17",
           "matchTime": "14:30",
-          "field": "A"
+          "field": "A pálya"
         },
         {
           "id": "btlb-gm-1",
@@ -179,14 +179,14 @@
           "homeScore": 2,
           "awayScore": 8,
           "status": "completed",
-          "matchday": 1,
+          "matchday": 2,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "matchDate": "2026-03-18",
           "matchTime": "14:30",
-          "field": "B"
+          "field": "B pálya"
         },
         {
           "id": "btlb-gm-2",
@@ -195,13 +195,13 @@
           "groupId": "group-a",
           "homeTeamId": "team-1",
           "awayTeamId": "team-4",
-          "homeScore": null,
-          "awayScore": null,
-          "status": "scheduled",
-          "matchday": 2,
+          "homeScore": 1,
+          "awayScore": 7,
+          "status": "completed",
+          "matchday": 3,
           "matchDate": "2026-03-19",
           "matchTime": "14:30",
-          "field": "A",
+          "field": "A pálya",
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
@@ -214,17 +214,17 @@
           "groupId": "group-a",
           "homeTeamId": "team-2",
           "awayTeamId": "team-3",
-          "homeScore": null,
-          "awayScore": null,
-          "status": "scheduled",
-          "matchday": 2,
+          "homeScore": 8,
+          "awayScore": 1,
+          "status": "completed",
+          "matchday": 3,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "matchDate": "2026-03-19",
           "matchTime": "15:30",
-          "field": "A"
+          "field": "A pálya"
         },
         {
           "id": "btlb-gm-4",
@@ -236,14 +236,14 @@
           "homeScore": 5,
           "awayScore": 2,
           "status": "completed",
-          "matchday": 3,
+          "matchday": 2,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "matchDate": "2026-03-18",
           "matchTime": "15:30",
-          "field": "A"
+          "field": "A pálya"
         },
         {
           "id": "btlb-gm-5",
@@ -255,14 +255,14 @@
           "homeScore": 2,
           "awayScore": 4,
           "status": "completed",
-          "matchday": 3,
+          "matchday": 1,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 1,
           "awayRedCards": 1,
           "matchDate": "2026-03-17",
           "matchTime": "15:30",
-          "field": "A"
+          "field": "A pálya"
         },
         {
           "id": "btlb-gm-6",
@@ -271,13 +271,17 @@
           "groupId": "group-b",
           "homeTeamId": "team-5",
           "awayTeamId": "team-6",
-          "homeScore": null,
-          "awayScore": null,
-          "status": "scheduled",
-          "matchday": 1,
+          "homeScore": 5,
+          "awayScore": 10,
+          "status": "completed",
+          "matchday": 3,
           "matchDate": "2026-03-19",
           "matchTime": "15:30",
-          "field": "B"
+          "field": "B pálya",
+          "homeYellowCards": 0,
+          "awayYellowCards": 0,
+          "homeRedCards": 0,
+          "awayRedCards": 0
         },
         {
           "id": "btlb-gm-7",
@@ -286,17 +290,17 @@
           "groupId": "group-b",
           "homeTeamId": "team-5",
           "awayTeamId": "team-7",
-          "homeScore": null,
-          "awayScore": null,
-          "status": "scheduled",
-          "matchday": 1,
+          "homeScore": 1,
+          "awayScore": 3,
+          "status": "completed",
+          "matchday": 3,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "matchDate": "2026-03-19",
           "matchTime": "14:30",
-          "field": "B"
+          "field": "B pálya"
         },
         {
           "id": "btlb-gm-8",
@@ -315,7 +319,7 @@
           "awayRedCards": 0,
           "matchDate": "2026-03-18",
           "matchTime": "14:30",
-          "field": "B"
+          "field": "B pálya"
         },
         {
           "id": "btlb-gm-9",
@@ -334,7 +338,7 @@
           "awayRedCards": 0,
           "matchDate": "2026-03-18",
           "matchTime": "14:30",
-          "field": "A"
+          "field": "A pálya"
         },
         {
           "id": "btlb-gm-10",
@@ -346,14 +350,14 @@
           "homeScore": 0,
           "awayScore": 2,
           "status": "completed",
-          "matchday": 3,
+          "matchday": 1,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "matchDate": "2026-03-17",
           "matchTime": "16:30",
-          "field": "A"
+          "field": "A pálya"
         },
         {
           "id": "btlb-gm-11",
@@ -365,14 +369,14 @@
           "homeScore": 2,
           "awayScore": 2,
           "status": "completed",
-          "matchday": 3,
+          "matchday": 2,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "matchDate": "2026-03-18",
           "matchTime": "16:30",
-          "field": "A"
+          "field": "A pálya"
         },
         {
           "id": "btlb-gm-12",
@@ -390,7 +394,9 @@
           "homeRedCards": 0,
           "awayRedCards": 0,
           "comment": "Elmaradt",
-          "matchDate": "1900-01-01"
+          "matchDate": "2026-03-17",
+          "matchTime": "14:30",
+          "field": "B pálya"
         },
         {
           "id": "btlb-gm-13",
@@ -402,13 +408,15 @@
           "homeScore": 3,
           "awayScore": 0,
           "status": "completed",
-          "matchday": 1,
+          "matchday": 2,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "comment": "Elmaradt",
-          "matchDate": "1900-01-01"
+          "matchDate": "2026-03-18",
+          "matchTime": "14:30",
+          "field": "C pálya"
         },
         {
           "id": "btlb-gm-14",
@@ -417,17 +425,17 @@
           "groupId": "group-c",
           "homeTeamId": "team-9",
           "awayTeamId": "team-12",
-          "homeScore": null,
-          "awayScore": null,
-          "status": "scheduled",
-          "matchday": 2,
+          "homeScore": 4,
+          "awayScore": 2,
+          "status": "completed",
+          "matchday": 3,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "matchDate": "2026-03-19",
           "matchTime": "14:30",
-          "field": "C"
+          "field": "C pálya"
         },
         {
           "id": "btlb-gm-15",
@@ -439,13 +447,15 @@
           "homeScore": 3,
           "awayScore": 0,
           "status": "completed",
-          "matchday": 2,
+          "matchday": 3,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "comment": "Elmaradt",
-          "matchDate": "1900-01-01"
+          "matchDate": "2026-03-19",
+          "matchTime": "15:30",
+          "field": "C pálya"
         },
         {
           "id": "btlb-gm-16",
@@ -457,14 +467,14 @@
           "homeScore": 4,
           "awayScore": 5,
           "status": "completed",
-          "matchday": 3,
+          "matchday": 2,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "matchDate": "2026-03-18",
           "matchTime": "16:30",
-          "field": "C"
+          "field": "C pálya"
         },
         {
           "id": "btlb-gm-17",
@@ -476,13 +486,15 @@
           "homeScore": 0,
           "awayScore": 3,
           "status": "completed",
-          "matchday": 3,
+          "matchday": 1,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
-          "comment": "Elmaradt\n",
-          "matchDate": "1900-01-01"
+          "comment": "Elmaradt",
+          "matchDate": "2026-03-17",
+          "matchTime": "15:30",
+          "field": "B pálya"
         },
         {
           "id": "btlb-gm-18",
@@ -500,7 +512,9 @@
           "homeRedCards": 0,
           "awayRedCards": 0,
           "comment": "Elmaradt\n",
-          "matchDate": "1900-01-01"
+          "matchDate": "2026-03-17",
+          "matchTime": "15:30",
+          "field": "C pálya"
         },
         {
           "id": "btlb-gm-19",
@@ -509,13 +523,17 @@
           "groupId": "group-d",
           "homeTeamId": "team-13",
           "awayTeamId": "team-15",
-          "homeScore": null,
-          "awayScore": null,
-          "status": "scheduled",
-          "matchday": 1,
+          "homeScore": 4,
+          "awayScore": 2,
+          "status": "completed",
+          "matchday": 3,
           "matchDate": "2026-03-19",
           "matchTime": "14:30",
-          "field": "A"
+          "field": "A pálya",
+          "homeYellowCards": 0,
+          "awayYellowCards": 0,
+          "homeRedCards": 0,
+          "awayRedCards": 0
         },
         {
           "id": "btlb-gm-20",
@@ -532,7 +550,10 @@
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
-          "matchDate": "1900-01-01"
+          "matchDate": "2026-03-18",
+          "comment": "Elmaradt",
+          "matchTime": "14:30",
+          "field": "D pálya"
         },
         {
           "id": "btlb-gm-21",
@@ -550,7 +571,9 @@
           "homeRedCards": 0,
           "awayRedCards": 0,
           "comment": "Elmaradt\n",
-          "matchDate": "1900-01-01"
+          "matchDate": "2026-03-18",
+          "matchTime": "15:30",
+          "field": "D pálya"
         },
         {
           "id": "btlb-gm-22",
@@ -568,7 +591,9 @@
           "homeRedCards": 0,
           "awayRedCards": 0,
           "comment": "Elmaradt",
-          "matchDate": "1900-01-01"
+          "matchDate": "2026-03-19",
+          "matchTime": "15:30",
+          "field": "D pálya"
         },
         {
           "id": "btlb-gm-23",
@@ -580,18 +605,240 @@
           "homeScore": 3,
           "awayScore": 0,
           "status": "completed",
-          "matchday": 3,
+          "matchday": 1,
           "homeYellowCards": 0,
           "awayYellowCards": 0,
           "homeRedCards": 0,
           "awayRedCards": 0,
           "comment": "Elmaradt",
-          "matchDate": "1900-01-01"
+          "matchDate": "2026-03-17",
+          "matchTime": "14:30",
+          "field": "C pálya"
+        },
+        {
+          "id": "main-r0-m1000",
+          "tournamentId": "btlb",
+          "stage": "main",
+          "bracketRound": 0,
+          "bracketPosition": 0,
+          "homeTeamId": "team-2",
+          "awayTeamId": "team-8",
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "main-r1-m1004",
+          "nextMatchSlot": "home"
+        },
+        {
+          "id": "main-r0-m1001",
+          "tournamentId": "btlb",
+          "stage": "main",
+          "bracketRound": 0,
+          "bracketPosition": 1,
+          "homeTeamId": "team-7",
+          "awayTeamId": "team-4",
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "main-r1-m1004",
+          "nextMatchSlot": "away"
+        },
+        {
+          "id": "main-r0-m1002",
+          "tournamentId": "btlb",
+          "stage": "main",
+          "bracketRound": 0,
+          "bracketPosition": 2,
+          "homeTeamId": "team-10",
+          "awayTeamId": "team-15",
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "main-r1-m1005",
+          "nextMatchSlot": "home"
+        },
+        {
+          "id": "main-r0-m1003",
+          "tournamentId": "btlb",
+          "stage": "main",
+          "bracketRound": 0,
+          "bracketPosition": 3,
+          "homeTeamId": "team-13",
+          "awayTeamId": "team-12",
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "main-r1-m1005",
+          "nextMatchSlot": "away"
+        },
+        {
+          "id": "main-r1-m1004",
+          "tournamentId": "btlb",
+          "stage": "main",
+          "bracketRound": 1,
+          "bracketPosition": 0,
+          "homeTeamId": null,
+          "awayTeamId": null,
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "main-r2-m1006",
+          "nextMatchSlot": "home"
+        },
+        {
+          "id": "main-r1-m1005",
+          "tournamentId": "btlb",
+          "stage": "main",
+          "bracketRound": 1,
+          "bracketPosition": 1,
+          "homeTeamId": null,
+          "awayTeamId": null,
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "main-r2-m1006",
+          "nextMatchSlot": "away"
+        },
+        {
+          "id": "main-r2-m1006",
+          "tournamentId": "btlb",
+          "stage": "main",
+          "bracketRound": 2,
+          "bracketPosition": 0,
+          "homeTeamId": null,
+          "awayTeamId": null,
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": null
+        },
+        {
+          "id": "main-3rd-1007",
+          "tournamentId": "btlb",
+          "stage": "main",
+          "bracketRound": 2,
+          "bracketPosition": 1,
+          "homeTeamId": null,
+          "awayTeamId": null,
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": null
+        },
+        {
+          "id": "consolation-r0-m2000",
+          "tournamentId": "btlb",
+          "stage": "consolation",
+          "bracketRound": 0,
+          "bracketPosition": 0,
+          "homeTeamId": "team-3",
+          "awayTeamId": "team-5",
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "consolation-r1-m2004",
+          "nextMatchSlot": "home"
+        },
+        {
+          "id": "consolation-r0-m2001",
+          "tournamentId": "btlb",
+          "stage": "consolation",
+          "bracketRound": 0,
+          "bracketPosition": 1,
+          "homeTeamId": "team-6",
+          "awayTeamId": "team-1",
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "consolation-r1-m2004",
+          "nextMatchSlot": "away"
+        },
+        {
+          "id": "consolation-r0-m2002",
+          "tournamentId": "btlb",
+          "stage": "consolation",
+          "bracketRound": 0,
+          "bracketPosition": 2,
+          "homeTeamId": "team-9",
+          "awayTeamId": "team-14",
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "consolation-r1-m2005",
+          "nextMatchSlot": "home"
+        },
+        {
+          "id": "consolation-r0-m2003",
+          "tournamentId": "btlb",
+          "stage": "consolation",
+          "bracketRound": 0,
+          "bracketPosition": 3,
+          "homeTeamId": "team-16",
+          "awayTeamId": "team-11",
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "consolation-r1-m2005",
+          "nextMatchSlot": "away"
+        },
+        {
+          "id": "consolation-r1-m2004",
+          "tournamentId": "btlb",
+          "stage": "consolation",
+          "bracketRound": 1,
+          "bracketPosition": 0,
+          "homeTeamId": null,
+          "awayTeamId": null,
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "consolation-r2-m2006",
+          "nextMatchSlot": "home"
+        },
+        {
+          "id": "consolation-r1-m2005",
+          "tournamentId": "btlb",
+          "stage": "consolation",
+          "bracketRound": 1,
+          "bracketPosition": 1,
+          "homeTeamId": null,
+          "awayTeamId": null,
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": "consolation-r2-m2006",
+          "nextMatchSlot": "away"
+        },
+        {
+          "id": "consolation-r2-m2006",
+          "tournamentId": "btlb",
+          "stage": "consolation",
+          "bracketRound": 2,
+          "bracketPosition": 0,
+          "homeTeamId": null,
+          "awayTeamId": null,
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": null
+        },
+        {
+          "id": "consolation-3rd-2007",
+          "tournamentId": "btlb",
+          "stage": "consolation",
+          "bracketRound": 2,
+          "bracketPosition": 1,
+          "homeTeamId": null,
+          "awayTeamId": null,
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": null
         }
       ],
       "createdAt": "2026-03-18T19:51:25.139Z",
-      "updatedAt": "2026-03-19T07:20:58.305Z",
-      "groupStageLocked": false,
+      "updatedAt": "2026-03-21T17:02:57.227Z",
+      "groupStageLocked": true,
       "bracketStageLocked": false
     }
   ],
