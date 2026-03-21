@@ -16,9 +16,8 @@ interface BracketViewProps {
 // Match type labels for the complex bracket
 type MatchType = 
   | "qf"           // Quarter-finals (Negyeddöntő)
-  | "qf_losers"    // QF losers bracket (5-8 helyért 1. kör)
-  | "sf"           // Semi-finals (Elődöntő)
-  | "sf_5th"       // Semi-final for 5th place (5-8 helyért 2. kör)
+  | "sf"           // Semi-finals 1-4 (Elődöntő)
+  | "sf58"         // Semi-finals 5-8 (5-8. helyért)
   | "final"        // Final (1st-2nd)
   | "3rd"          // 3rd place match
   | "5th"          // 5th place match
@@ -36,9 +35,8 @@ function getMatchLabel(type: MatchType, stage: MatchStage): string {
   const isConsolation = stage === "consolation"
   switch (type) {
     case "qf": return "Negyeddöntő"
-    case "qf_losers": return isConsolation ? "13-16. helyért" : "5-8. helyért"
-    case "sf": return "Elődöntő"
-    case "sf_5th": return isConsolation ? "13-16. helyért" : "5-8. helyért"
+    case "sf": return "Elődöntő (1-4)"
+    case "sf58": return isConsolation ? "Elődöntő (13-16)" : "Elődöntő (5-8)"
     case "final": return "Döntő"
     case "3rd": return isConsolation ? "11. helyért" : "Bronzmérkőzés"
     case "5th": return isConsolation ? "13. helyért" : "5. helyért"
@@ -62,10 +60,8 @@ function categorizeMatches(matches: Match[], stage: MatchStage): Map<MatchType, 
       type = "5th"
     } else if (match.id.includes("7th")) {
       type = "7th"
-    } else if (match.id.includes("sf-5th") || match.id.includes("sf5")) {
-      type = "sf_5th"
-    } else if (match.id.includes("qf-losers") || match.id.includes("qfl")) {
-      type = "qf_losers"
+    } else if (match.id.includes("sf58")) {
+      type = "sf58"
     } else if (match.bracketRound === 0 && position < 10) {
       type = "qf"
     } else if (match.bracketRound === 1 && position < 10) {
@@ -110,16 +106,15 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
   const categorized = categorizeMatches(matches, stage)
   
   const qf = categorized.get("qf") ?? []
-  const qfLosers = categorized.get("qf_losers") ?? []
   const sf = categorized.get("sf") ?? []
-  const sf5th = categorized.get("sf_5th") ?? []
+  const sf58 = categorized.get("sf58") ?? []
   const finalMatch = categorized.get("final") ?? []
   const thirdPlace = categorized.get("3rd") ?? []
   const fifthPlace = categorized.get("5th") ?? []
   const seventhPlace = categorized.get("7th") ?? []
 
-  // Determine if we have a complex bracket with losers (placement matches for 5-8)
-  const hasPlacementMatches = qfLosers.length > 0 || sf5th.length > 0 || fifthPlace.length > 0 || seventhPlace.length > 0
+  // Determine if we have a complex bracket with placement matches for 5-8
+  const hasPlacementMatches = sf58.length > 0 || fifthPlace.length > 0 || seventhPlace.length > 0
   
   // Simple bracket (no placement matches)
   if (!hasPlacementMatches) {
@@ -138,40 +133,32 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
   const isConsolation = stage === "consolation"
 
   // Complex bracket with winner and placement matches (8 teams)
+  // Structure: QF -> SF (1-4) + SF (5-8) -> Finals (1st, 3rd, 5th, 7th)
   return (
     <div className="space-y-8">
       <h3 className="text-lg font-bold">{title}</h3>
       
       {/* Desktop complex bracket view */}
       <div className="hidden overflow-x-auto lg:block">
-        <div className="min-w-[1100px] pb-4">
+        <div className="min-w-[900px] pb-4">
           {/* Column Headers */}
-          <div className="mb-4 grid grid-cols-7 gap-3">
+          <div className="mb-4 grid grid-cols-5 gap-4">
             <div className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Negyeddöntő
             </div>
             <div className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {isConsolation ? "13-16. helyért" : "5-8. helyért"}
+              {isConsolation ? "Elődöntő (9-12)" : "Elődöntő (1-4)"}
             </div>
             <div className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Elődöntő
+              {isConsolation ? "Elődöntő (13-16)" : "Elődöntő (5-8)"}
             </div>
-            <div className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {isConsolation ? "13-16. helyért" : "5-8. helyért"}
-            </div>
-            <div className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {isConsolation ? "11. helyért" : "Bronzmérkőzés"}
-            </div>
-            <div className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {isConsolation ? "13./15. helyért" : "5./7. helyért"}
-            </div>
-            <div className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Döntő
+            <div className="col-span-2 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Végeredmény
             </div>
           </div>
 
           {/* Bracket Grid */}
-          <div className="relative grid grid-cols-7 gap-3">
+          <div className="relative grid grid-cols-5 gap-4">
             {/* Column 1: Quarter-finals */}
             <div className="flex flex-col justify-around gap-3">
               {qf.map((info) => (
@@ -186,22 +173,7 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
               ))}
             </div>
 
-            {/* Column 2: QF losers - 5-8 placement round 1 */}
-            <div className="flex flex-col justify-around gap-6" style={{ paddingTop: '2.5rem', paddingBottom: '2.5rem' }}>
-              {qfLosers.map((info) => (
-                <BracketMatchCard
-                  key={info.match.id}
-                  match={info.match}
-                  teams={teams}
-                  tournamentId={tournamentId}
-                  showColoredAbbr
-                  groups={groups}
-                  variant="losers"
-                />
-              ))}
-            </div>
-
-            {/* Column 3: Semi-finals */}
+            {/* Column 2: Semi-finals (1-4) */}
             <div className="flex flex-col justify-around gap-6" style={{ paddingTop: '2.5rem', paddingBottom: '2.5rem' }}>
               {sf.map((info) => (
                 <BracketMatchCard
@@ -215,9 +187,9 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
               ))}
             </div>
 
-            {/* Column 4: Semi-finals for 5th place */}
+            {/* Column 3: Semi-finals (5-8) */}
             <div className="flex flex-col justify-around gap-6" style={{ paddingTop: '2.5rem', paddingBottom: '2.5rem' }}>
-              {sf5th.map((info) => (
+              {sf58.map((info) => (
                 <BracketMatchCard
                   key={info.match.id}
                   match={info.match}
@@ -230,8 +202,19 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
               ))}
             </div>
 
-            {/* Column 5: 3rd place match */}
-            <div className="flex flex-col justify-center">
+            {/* Column 4: Final + 3rd place */}
+            <div className="flex flex-col justify-around gap-4">
+              {finalMatch.map((info) => (
+                <BracketMatchCard
+                  key={info.match.id}
+                  match={info.match}
+                  teams={teams}
+                  tournamentId={tournamentId}
+                  showColoredAbbr
+                  groups={groups}
+                  variant="final"
+                />
+              ))}
               {thirdPlace.map((info) => (
                 <BracketMatchCard
                   key={info.match.id}
@@ -245,7 +228,7 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
               ))}
             </div>
 
-            {/* Column 6: 5th and 7th place matches */}
+            {/* Column 5: 5th and 7th place matches */}
             <div className="flex flex-col justify-around gap-4">
               {fifthPlace.map((info) => (
                 <BracketMatchCard
@@ -267,21 +250,6 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                   showColoredAbbr
                   groups={groups}
                   variant="placement"
-                />
-              ))}
-            </div>
-
-            {/* Column 7: Final */}
-            <div className="flex flex-col justify-center">
-              {finalMatch.map((info) => (
-                <BracketMatchCard
-                  key={info.match.id}
-                  match={info.match}
-                  teams={teams}
-                  tournamentId={tournamentId}
-                  showColoredAbbr
-                  groups={groups}
-                  variant="final"
                 />
               ))}
             </div>
@@ -328,8 +296,7 @@ function SimpleBracketView({
       !m.id.includes("3rd") && 
       !m.id.includes("5th") && 
       !m.id.includes("7th") &&
-      !m.id.includes("qf-losers") &&
-      !m.id.includes("sf-5th")
+      !m.id.includes("sf58")
     )
     .sort((a, b) => {
       if ((a.bracketRound ?? 0) !== (b.bracketRound ?? 0))
@@ -478,13 +445,12 @@ function MobileListView({
   const isConsolation = stage === "consolation"
   const sections: { type: MatchType; label: string }[] = [
     { type: "qf", label: "Negyeddöntő" },
-    { type: "qf_losers", label: isConsolation ? "13-16. helyért (1. kör)" : "5-8. helyért (1. kör)" },
-    { type: "sf", label: "Elődöntő" },
-    { type: "sf_5th", label: isConsolation ? "13-16. helyért (2. kör)" : "5-8. helyért (2. kör)" },
+    { type: "sf", label: isConsolation ? "Elődöntő (9-12)" : "Elődöntő (1-4)" },
+    { type: "sf58", label: isConsolation ? "Elődöntő (13-16)" : "Elődöntő (5-8)" },
+    { type: "final", label: "Döntő" },
     { type: "3rd", label: isConsolation ? "11. helyért" : "Bronzmérkőzés" },
     { type: "5th", label: isConsolation ? "13. helyért" : "5. helyért" },
     { type: "7th", label: isConsolation ? "15. helyért" : "7. helyért" },
-    { type: "final", label: "Döntő" },
   ]
 
   return (

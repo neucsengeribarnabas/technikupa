@@ -351,60 +351,27 @@ export function generateBracketMatches(
   }
 
   // Add 5th-8th placement matches if we have 8 teams (for both main and consolation brackets)
+  // Structure: QF losers -> SF 5-8 (2 matches) -> 5th place (winners) + 7th place (losers)
   if (numTeams >= 8) {
-    // QF losers play each other (2 matches) - these feed into sf-5th
-    const qfLosers1Id = `${stage}-qf-losers-${matchIdCounter++}`
-    const qfLosers2Id = `${stage}-qf-losers-${matchIdCounter++}`
+    // Semi-finals for 5-8 placement (QF losers play each other)
+    // SF 5-8 match 1: loser of QF0 vs loser of QF1
+    // SF 5-8 match 2: loser of QF2 vs loser of QF3
+    const sf58_1Id = `${stage}-sf58-${matchIdCounter++}`
+    const sf58_2Id = `${stage}-sf58-${matchIdCounter++}`
     
-    // Semi-finals for 5th place (losers of QF losers matches play for 7th, winners for 5th)
-    const sf5th1Id = `${stage}-sf-5th-${matchIdCounter++}`
-    const sf5th2Id = `${stage}-sf-5th-${matchIdCounter++}`
-    
-    // 5th place match (winners of sf5th)
+    // 5th place match (winners of SF 5-8)
     const fifthPlaceId = `${stage}-5th-${matchIdCounter++}`
     
-    // 7th place match (losers of sf5th)
+    // 7th place match (losers of SF 5-8)
     const seventhPlaceId = `${stage}-7th-${matchIdCounter++}`
 
-    // QF Losers match 1 (losers from QF match 0 and 1)
+    // SF 5-8 match 1 (losers from QF match 0 and 1)
     matches.push({
-      id: qfLosers1Id,
+      id: sf58_1Id,
       tournamentId,
       stage,
-      bracketRound: 1, // Same round as SF
-      bracketPosition: 10, // Special position to distinguish
-      homeTeamId: null,
-      awayTeamId: null,
-      homeScore: null,
-      awayScore: null,
-      status: "scheduled",
-      nextMatchId: sf5th1Id,
-      nextMatchSlot: "home",
-    })
-
-    // QF Losers match 2 (losers from QF match 2 and 3)
-    matches.push({
-      id: qfLosers2Id,
-      tournamentId,
-      stage,
-      bracketRound: 1, // Same round as SF
-      bracketPosition: 11,
-      homeTeamId: null,
-      awayTeamId: null,
-      homeScore: null,
-      awayScore: null,
-      status: "scheduled",
-      nextMatchId: sf5th2Id,
-      nextMatchSlot: "home",
-    })
-
-    // SF for 5th match 1 (winner of qfLosers1 vs loser of SF1)
-    matches.push({
-      id: sf5th1Id,
-      tournamentId,
-      stage,
-      bracketRound: 2, // Same round as Final
-      bracketPosition: 10,
+      bracketRound: 1, // Same round as SF (1-4)
+      bracketPosition: 10, // Special position to distinguish from main SF
       homeTeamId: null,
       awayTeamId: null,
       homeScore: null,
@@ -414,12 +381,12 @@ export function generateBracketMatches(
       nextMatchSlot: "home",
     })
 
-    // SF for 5th match 2 (winner of qfLosers2 vs loser of SF2)
+    // SF 5-8 match 2 (losers from QF match 2 and 3)
     matches.push({
-      id: sf5th2Id,
+      id: sf58_2Id,
       tournamentId,
       stage,
-      bracketRound: 2, // Same round as Final
+      bracketRound: 1, // Same round as SF (1-4)
       bracketPosition: 11,
       homeTeamId: null,
       awayTeamId: null,
@@ -430,12 +397,12 @@ export function generateBracketMatches(
       nextMatchSlot: "away",
     })
 
-    // 5th place match
+    // 5th place match (winners of SF 5-8)
     matches.push({
       id: fifthPlaceId,
       tournamentId,
       stage,
-      bracketRound: 3, // After final
+      bracketRound: 2, // Same round as Final
       bracketPosition: 10,
       homeTeamId: null,
       awayTeamId: null,
@@ -446,12 +413,12 @@ export function generateBracketMatches(
       nextMatchSlot: undefined,
     })
 
-    // 7th place match (losers of sf5th matches)
+    // 7th place match (losers of SF 5-8)
     matches.push({
       id: seventhPlaceId,
       tournamentId,
       stage,
-      bracketRound: 3, // After final
+      bracketRound: 2, // Same round as Final
       bracketPosition: 11,
       homeTeamId: null,
       awayTeamId: null,
@@ -494,37 +461,23 @@ export function advanceBracketWinner(
   // Handle loser advancement for placement matches
   const stage = match.stage
   
-  // If this is a QF match (round 0 in 8-team bracket), send loser to qf-losers
-  if (match.bracketRound === 0 && !match.id.includes("losers") && !match.id.includes("5th") && !match.id.includes("7th") && !match.id.includes("3rd")) {
+  // If this is a QF match (round 0 in 8-team bracket), send loser to SF 5-8
+  if (match.bracketRound === 0 && !match.id.includes("sf58") && !match.id.includes("5th") && !match.id.includes("7th") && !match.id.includes("3rd")) {
     const position = match.bracketPosition ?? 0
-    // QF matches 0,1 losers go to qf-losers match 1, QF matches 2,3 losers go to qf-losers match 2
-    const qfLosersMatchNum = position < 2 ? 1 : 2
+    // QF matches 0,1 losers go to SF 5-8 match 1, QF matches 2,3 losers go to SF 5-8 match 2
+    const sf58MatchPos = position < 2 ? 10 : 11
     const slot = position % 2 === 0 ? "homeTeamId" : "awayTeamId"
     
     updatedMatches = updatedMatches.map((m) => {
-      if (m.id.includes(`${stage}-qf-losers`) && m.bracketPosition === (qfLosersMatchNum === 1 ? 10 : 11)) {
+      if (m.id.includes(`${stage}-sf58`) && m.bracketPosition === sf58MatchPos) {
         return { ...m, [slot]: loserId }
       }
       return m
     })
   }
 
-  // If this is a SF match (round 1 in 8-team bracket), send loser to sf-5th (for 5th-8th placement)
-  if (match.bracketRound === 1 && !match.id.includes("losers") && !match.id.includes("5th") && !match.id.includes("7th") && !match.id.includes("3rd")) {
-    const position = match.bracketPosition ?? 0
-    // SF match 0 loser goes to sf-5th match 1, SF match 1 loser goes to sf-5th match 2
-    const sf5thMatchPos = position === 0 ? 10 : 11
-    
-    updatedMatches = updatedMatches.map((m) => {
-      if (m.id.includes(`${stage}-sf-5th`) && m.bracketPosition === sf5thMatchPos) {
-        return { ...m, awayTeamId: loserId }
-      }
-      return m
-    })
-  }
-
-  // If this is a SF match, also send loser to 3rd place match
-  if (match.bracketRound === 1 && !match.id.includes("losers") && !match.id.includes("5th") && !match.id.includes("7th")) {
+  // If this is a SF (1-4) match (round 1, position < 10), send loser to 3rd place match
+  if (match.bracketRound === 1 && (match.bracketPosition ?? 0) < 10 && !match.id.includes("sf58") && !match.id.includes("5th") && !match.id.includes("7th")) {
     const position = match.bracketPosition ?? 0
     const slot = position === 0 ? "homeTeamId" : "awayTeamId"
     
@@ -536,8 +489,8 @@ export function advanceBracketWinner(
     })
   }
 
-  // If this is a sf-5th match, send loser to 7th place match
-  if (match.id.includes("sf-5th")) {
+  // If this is a SF 5-8 match, send loser to 7th place match
+  if (match.id.includes("sf58")) {
     const position = match.bracketPosition ?? 0
     const slot = position === 10 ? "homeTeamId" : "awayTeamId"
     
@@ -547,12 +500,6 @@ export function advanceBracketWinner(
       }
       return m
     })
-  }
-
-  // If this is a qf-losers match, winner goes to sf-5th (already handled by nextMatchId)
-  // but we need to advance the winner properly
-  if (match.id.includes("qf-losers")) {
-    // Winner already advances via nextMatchId
   }
 
   return updatedMatches
