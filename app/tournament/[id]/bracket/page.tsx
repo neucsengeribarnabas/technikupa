@@ -26,6 +26,7 @@ export default function BracketPage({ params }: { params: Promise<{ id: string }
             tournamentId={tournament.id}
             stage="main"
             title="Főág"
+            groups={tournament.groups}
           />
         </TabsContent>
 
@@ -36,6 +37,7 @@ export default function BracketPage({ params }: { params: Promise<{ id: string }
             tournamentId={tournament.id}
             stage="consolation"
             title="Vigaszág"
+            groups={tournament.groups}
           />
         </TabsContent>
       </Tabs>

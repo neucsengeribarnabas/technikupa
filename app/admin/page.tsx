@@ -351,9 +351,22 @@ export default function AdminPage() {
     if (stageMatches.length === 0) return null
     const rounds = new Map<number, Match[]>()
     const thirdPlaceMatches: Match[] = []
+    const fifthPlaceMatches: Match[] = []
+    const seventhPlaceMatches: Match[] = []
+    const qfLosersMatches: Match[] = []
+    const sf5thMatches: Match[] = []
+    
     stageMatches.forEach((m) => {
       if (m.id.includes("3rd")) {
         thirdPlaceMatches.push(m)
+      } else if (m.id.includes("5th")) {
+        fifthPlaceMatches.push(m)
+      } else if (m.id.includes("7th")) {
+        seventhPlaceMatches.push(m)
+      } else if (m.id.includes("qf-losers")) {
+        qfLosersMatches.push(m)
+      } else if (m.id.includes("sf-5th")) {
+        sf5thMatches.push(m)
       } else {
         const round = m.bracketRound ?? 0
         if (!rounds.has(round)) rounds.set(round, [])
@@ -369,6 +382,10 @@ export default function AdminPage() {
           .sort(([a], [b]) => a - b)
           .map(([round, matches]) => renderBracketRound(matches, getRoundLabel(round, totalRounds)))}
         {thirdPlaceMatches.length > 0 && renderBracketRound(thirdPlaceMatches, "Bronzmérkőzés")}
+        {qfLosersMatches.length > 0 && renderBracketRound(qfLosersMatches, "5-8. helyért (1. kör)")}
+        {sf5thMatches.length > 0 && renderBracketRound(sf5thMatches, "5-8. helyért (2. kör)")}
+        {fifthPlaceMatches.length > 0 && renderBracketRound(fifthPlaceMatches, "5. helyért")}
+        {seventhPlaceMatches.length > 0 && renderBracketRound(seventhPlaceMatches, "7. helyért")}
       </div>
     )
   }
