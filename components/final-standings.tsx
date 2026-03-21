@@ -63,7 +63,7 @@ export function FinalStandings({ tournament }: FinalStandingsProps) {
             />
             <div>
               <span className="font-medium">{p.team.name}</span>
-              <p className="text-xs text-muted-foreground">{p.source}</p>
+
             </div>
           </div>
 

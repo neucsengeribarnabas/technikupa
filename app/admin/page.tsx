@@ -347,13 +347,23 @@ export default function AdminPage() {
     )
   }
 
-  function renderBracketSection(stageMatches: Match[], stageTitle: string) {
+  function renderBracketSection(stageMatches: Match[], stageTitle: string, isConsolation: boolean = false) {
     if (stageMatches.length === 0) return null
     const rounds = new Map<number, Match[]>()
     const thirdPlaceMatches: Match[] = []
+    const fifthPlaceMatches: Match[] = []
+    const seventhPlaceMatches: Match[] = []
+    const sf58Matches: Match[] = []
+    
     stageMatches.forEach((m) => {
       if (m.id.includes("3rd")) {
         thirdPlaceMatches.push(m)
+      } else if (m.id.includes("5th")) {
+        fifthPlaceMatches.push(m)
+      } else if (m.id.includes("7th")) {
+        seventhPlaceMatches.push(m)
+      } else if (m.id.includes("sf58")) {
+        sf58Matches.push(m)
       } else {
         const round = m.bracketRound ?? 0
         if (!rounds.has(round)) rounds.set(round, [])
@@ -368,7 +378,10 @@ export default function AdminPage() {
         {Array.from(rounds.entries())
           .sort(([a], [b]) => a - b)
           .map(([round, matches]) => renderBracketRound(matches, getRoundLabel(round, totalRounds)))}
-        {thirdPlaceMatches.length > 0 && renderBracketRound(thirdPlaceMatches, "Bronzmérkőzés")}
+        {sf58Matches.length > 0 && renderBracketRound(sf58Matches, isConsolation ? "Elődöntő (13-16)" : "Elődöntő (5-8)")}
+        {thirdPlaceMatches.length > 0 && renderBracketRound(thirdPlaceMatches, isConsolation ? "11. helyért" : "Bronzmérkőzés")}
+        {fifthPlaceMatches.length > 0 && renderBracketRound(fifthPlaceMatches, isConsolation ? "13. helyért" : "5. helyért")}
+        {seventhPlaceMatches.length > 0 && renderBracketRound(seventhPlaceMatches, isConsolation ? "15. helyért" : "7. helyért")}
       </div>
     )
   }
@@ -679,7 +692,7 @@ export default function AdminPage() {
             ) : (
               <div className="space-y-8">
                 {renderBracketSection(mainBracketMatches, "Főág")}
-                {renderBracketSection(consolationBracketMatches, "Vigaszág")}
+                {renderBracketSection(consolationBracketMatches, "Vigaszág", true)}
               </div>
             )}
           </TabsContent>
