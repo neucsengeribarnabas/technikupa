@@ -2,7 +2,9 @@
 
 import type { Match, Team, MatchStage, Group } from "@/lib/types"
 import { BracketMatchCard } from "@/components/bracket-match-card"
+import { MatchCard } from "@/components/match-card"
 import { cn } from "@/lib/utils"
+
 
 interface BracketViewProps {
   matches: Match[]
@@ -138,8 +140,8 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
     <div className="space-y-8">
       <h3 className="text-lg font-bold">{title}</h3>
 
-      {/* Desktop complex bracket view - CSS Grid layout: 5 columns x 7 rows */}
-      <div className="hidden overflow-x-auto md:block">
+      {/* Complex bracket view - CSS Grid layout: 5 columns x 7 rows */}
+      <div className="overflow-x-auto">
         <div className="relative min-w-[1000px] pb-4">
           {/* CSS Grid: 5 columns, 7 rows - compact layout with labels */}
           <div
@@ -152,7 +154,23 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
               justifyContent: 'center'
             }}
           >
-            {/* ROW 1: SF losers on sides, QF1 center */}
+            {/* QF1 - top */}
+            <div style={{ gridColumn: 3, gridRow: 1 }} className="relative flex flex-col items-center">
+              {qf[0] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
+                  <BracketMatchCard
+                    match={qf[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                  />
+                </>
+              )}
+            </div>
+
+            {/* SF58 Upper - 5-8 placement semi */}
             <div style={{ gridColumn: 2, gridRow: 2 }} className="relative flex flex-col items-center">
               {sf58[0] && (
                 <>
@@ -170,12 +188,16 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
-            <div style={{ gridColumn: 3, gridRow: 1 }} className="relative flex flex-col items-center">
-              {qf[0] && (
+
+            {/* SF Upper - main semi-final */}
+            <div style={{ gridColumn: 4, gridRow: 2 }} className="relative flex flex-col items-center">
+              {sf[0] && (
                 <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "Helyosztó ED (9-12)" : "Elődöntő"}
+                  </span>
                   <BracketMatchCard
-                    match={qf[0].match}
+                    match={sf[0].match}
                     teams={teams}
                     tournamentId={tournamentId}
                     showColoredAbbr
@@ -184,6 +206,114 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
+
+            {/* QF2 */}
+            <div style={{ gridColumn: 3, gridRow: 3 }} className="relative flex flex-col items-center">
+              {qf[1] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
+                  <BracketMatchCard
+                    match={qf[1].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                  />
+                </>
+              )}
+            </div>
+
+            {/* 7th place */}
+            <div style={{ gridColumn: 1, gridRow: 4 }} className="relative flex flex-col items-center">
+              {seventhPlace[0] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "15. helyért" : "7. helyért"}
+                  </span>
+                  <BracketMatchCard
+                    match={seventhPlace[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant="placement"
+                  />
+                </>
+              )}
+            </div>
+
+            {/* 5th place */}
+            <div style={{ gridColumn: 2, gridRow: 4 }} className="relative flex flex-col items-center">
+              {fifthPlace[0] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "13. helyért" : "5. helyért"}
+                  </span>
+                  <BracketMatchCard
+                    match={fifthPlace[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant="placement"
+                  />
+                </>
+              )}
+            </div>
+
+            {/* Bronze match */}
+            <div style={{ gridColumn: 4, gridRow: 4 }} className="relative flex flex-col items-center">
+              {thirdPlace[0] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "11. helyért" : "Bronzmeccs"}
+                  </span>
+                  <BracketMatchCard
+                    match={thirdPlace[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant="bronze"
+                  />
+                </>
+              )}
+            </div>
+
+            {/* Final */}
+            <div style={{ gridColumn: 5, gridRow: 4 }} className="relative flex flex-col items-center">
+              {finalMatch[0] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "9. helyért" : "Döntő"}</span>
+                  <BracketMatchCard
+                    match={finalMatch[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant="final"
+                  />
+                </>
+              )}
+            </div>
+
+            {/* QF3 */}
+            <div style={{ gridColumn: 3, gridRow: 5 }} className="relative flex flex-col items-center">
+              {qf[2] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
+                  <BracketMatchCard
+                    match={qf[2].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                  />
+                </>
+              )}
+            </div>
+
+            {/* SF58 Lower */}
             <div style={{ gridColumn: 2, gridRow: 6 }} className="relative flex flex-col items-center">
               {sf58[1] && (
                 <>
@@ -202,135 +332,7 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
               )}
             </div>
 
-            {/* ROW 2: 7th, 5th, QF2, Bronze, Final */}
-            <div style={{ gridColumn: 1, gridRow: 4 }} className="relative flex flex-col items-center">
-              {seventhPlace[0] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
-                    {isConsolation ? "15. helyért" : "7. helyért"}
-                  </span>
-                  <BracketMatchCard
-                    match={seventhPlace[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                    variant="placement"
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 2, gridRow: 4 }} className="relative flex flex-col items-center">
-              {fifthPlace[0] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
-                    {isConsolation ? "13. helyért" : "5. helyért"}
-                  </span>
-                  <BracketMatchCard
-                    match={fifthPlace[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                    variant="placement"
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 3, gridRow: 3 }} className="relative flex flex-col items-center">
-              {qf[1] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
-                  <BracketMatchCard
-                    match={qf[1].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 4, gridRow: 4 }} className="relative flex flex-col items-center">
-              {thirdPlace[0] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
-                    {isConsolation ? "11. helyért" : "Bronzmeccs"}
-                  </span>
-                  <BracketMatchCard
-                    match={thirdPlace[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                    variant="bronze"
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 5, gridRow: 4 }} className="relative flex flex-col items-center">
-              {finalMatch[0] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "9. helyért" : "Döntő"}</span>
-                  <BracketMatchCard
-                    match={finalMatch[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                    variant="final"
-                  />
-                </>
-              )}
-            </div>
-
-            {/* ROW 3: QF3 center */}
-            <div style={{ gridColumn: 3, gridRow: 5 }} className="relative flex flex-col items-center">
-              {qf[2] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
-                  <BracketMatchCard
-                    match={qf[2].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                  />
-                </>
-              )}
-            </div>
-
-            {/* ROW 4: SF Winners on sides, QF4 center */}
-            <div style={{ gridColumn: 4, gridRow: 2 }} className="relative flex flex-col items-center">
-              {sf[0] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
-                    {isConsolation ? "Helyosztó ED (9-12)" : "Elődöntő"}
-                  </span>
-                  <BracketMatchCard
-                    match={sf[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 3, gridRow: 7 }} className="relative flex flex-col items-center">
-              {qf[3] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
-                  <BracketMatchCard
-                    match={qf[3].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                  />
-                </>
-              )}
-            </div>
+            {/* SF Lower */}
             <div style={{ gridColumn: 4, gridRow: 6 }} className="relative flex flex-col items-center">
               {sf[1] && (
                 <>
@@ -347,18 +349,26 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
+
+            {/* QF4 */}
+            <div style={{ gridColumn: 3, gridRow: 7 }} className="relative flex flex-col items-center">
+              {qf[3] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
+                  <BracketMatchCard
+                    match={qf[3].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                  />
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile list view */}
-      <MobileListView
-        categorized={categorized}
-        teams={teams}
-        tournamentId={tournamentId}
-        groups={groups}
-        stage={stage}
-      />
     </div>
   )
 }
@@ -417,8 +427,8 @@ function SimpleBracketView({
     <div className="space-y-6">
       {title && <h3 className="text-lg font-bold">{title}</h3>}
 
-      {/* Desktop bracket view with connectors */}
-      <div className="hidden overflow-x-auto md:block">
+      {/* Bracket view with connectors */}
+      <div className="overflow-x-auto">
         <BracketWithConnectors
           rounds={rounds}
           totalRounds={totalRounds}
@@ -427,35 +437,6 @@ function SimpleBracketView({
           groups={groups}
           getHungarianRoundLabel={getHungarianRoundLabel}
         />
-      </div>
-
-      {/* Mobile list view */}
-      <div className="space-y-4 md:hidden">
-        {Array.from(rounds.entries())
-          .sort(([a], [b]) => a - b)
-          .map(([round, roundMatches]) => {
-            const label = getHungarianRoundLabel(round, totalRounds)
-            return (
-              <div key={round} className="space-y-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  {label}
-                </span>
-                <div className="space-y-2">
-                  {roundMatches.map((match) => (
-                    <BracketMatchCard
-                      key={match.id}
-                      match={match}
-                      teams={teams}
-                      tournamentId={tournamentId}
-                      className="w-full"
-                      showColoredAbbr
-                      groups={groups}
-                    />
-                  ))}
-                </div>
-              </div>
-            )
-          })}
       </div>
 
       {/* 3rd place match */}
@@ -468,7 +449,7 @@ function SimpleBracketView({
             match={thirdPlaceMatch}
             teams={teams}
             tournamentId={tournamentId}
-            className={cn("md:w-48")}
+            className={cn("w-48")}
             showColoredAbbr
             groups={groups}
             variant="bronze"
@@ -629,58 +610,76 @@ function BracketWithConnectors({
   )
 }
 
-// Mobile list view for complex bracket
-function MobileListView({
-  categorized,
+// Exported match list component for the "Meccsek" tab
+export function BracketMatchList({
+  matches,
   teams,
-  tournamentId,
-  groups,
-  stage
+  tournamentId
 }: {
-  categorized: Map<MatchType, BracketMatchInfo[]>
+  matches: Match[]
   teams: Team[]
   tournamentId: string
-  groups?: Group[]
-  stage: MatchStage
 }) {
-  const isConsolation = stage === "consolation"
-  const sections: { type: MatchType; label: string }[] = [
-    { type: "qf", label: "Negyeddöntő" },
-    { type: "sf", label: isConsolation ? "Elődöntő (9-12)" : "Elődöntő (1-4)" },
-    { type: "sf58", label: isConsolation ? "Elődöntő (13-16)" : "Elődöntő (5-8)" },
-    { type: "final", label: "Döntő" },
-    { type: "3rd", label: isConsolation ? "11. helyért" : "Bronzmérkőzés" },
-    { type: "5th", label: isConsolation ? "13. helyért" : "5. helyért" },
-    { type: "7th", label: isConsolation ? "15. helyért" : "7. helyért" },
-  ]
+  // Filter to only bracket matches (main and consolation stages)
+  const bracketMatches = matches.filter(
+    (m) => m.stage === "main" || m.stage === "consolation"
+  )
+
+  // Sort matches by stage, then by round, then by position
+  const sortedMatches = [...bracketMatches].sort((a, b) => {
+    // Main stage first, then consolation
+    if (a.stage !== b.stage) {
+      return a.stage === "main" ? -1 : 1
+    }
+    
+    // Sort by bracket round
+    if ((a.bracketRound ?? 0) !== (b.bracketRound ?? 0)) {
+      return (a.bracketRound ?? 0) - (b.bracketRound ?? 0)
+    }
+    
+    // Sort by position
+    return (a.bracketPosition ?? 0) - (b.bracketPosition ?? 0)
+  })
+
+  // Group matches by stage
+  const mainMatches = sortedMatches.filter((m) => m.stage === "main")
+  const consolationMatches = sortedMatches.filter((m) => m.stage === "consolation")
 
   return (
-    <div className="space-y-4 md:hidden">
-      {sections.map(({ type, label }) => {
-        const infos = categorized.get(type) ?? []
-        if (infos.length === 0) return null
-
-        return (
-          <div key={type} className="space-y-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {label}
-            </span>
-            <div className="space-y-2">
-              {infos.map((info) => (
-                <BracketMatchCard
-                  key={info.match.id}
-                  match={info.match}
-                  teams={teams}
-                  tournamentId={tournamentId}
-                  className="w-full"
-                  showColoredAbbr
-                  groups={groups}
-                />
-              ))}
-            </div>
+    <div className="space-y-6">
+      {/* Main bracket matches */}
+      {mainMatches.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-lg font-bold">Főág</h3>
+          <div className="space-y-2">
+            {mainMatches.map((match) => (
+              <MatchCard
+                key={match.id}
+                match={match}
+                teams={teams}
+                tournamentId={tournamentId}
+              />
+            ))}
           </div>
-        )
-      })}
+        </div>
+      )}
+
+      {/* Consolation bracket matches */}
+      {consolationMatches.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-lg font-bold">Vigaszág</h3>
+          <div className="space-y-2">
+            {consolationMatches.map((match) => (
+              <MatchCard
+                key={match.id}
+                match={match}
+                teams={teams}
+                tournamentId={tournamentId}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
