@@ -2,7 +2,9 @@
 
 import type { Match, Team, MatchStage, Group } from "@/lib/types"
 import { BracketMatchCard } from "@/components/bracket-match-card"
+import { MatchCard } from "@/components/match-card"
 import { cn } from "@/lib/utils"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 
 interface BracketViewProps {
@@ -452,14 +454,31 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
         </div>
       </div>
 
-      {/* Mobile list view */}
-      <MobileListView
-        categorized={categorized}
-        teams={teams}
-        tournamentId={tournamentId}
-        groups={groups}
-        stage={stage}
-      />
+      {/* Mobile tabbed view */}
+      <div className="md:hidden">
+        <Tabs defaultValue="bracket" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="bracket">Ágrajz</TabsTrigger>
+            <TabsTrigger value="matches">Meccsek</TabsTrigger>
+          </TabsList>
+          <TabsContent value="bracket" className="pt-4">
+            <MobileBracketView
+              categorized={categorized}
+              teams={teams}
+              tournamentId={tournamentId}
+              groups={groups}
+              stage={stage}
+            />
+          </TabsContent>
+          <TabsContent value="matches" className="pt-4">
+            <MobileMatchListView
+              matches={bracketMatches}
+              teams={teams}
+              tournamentId={tournamentId}
+            />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   )
 }
@@ -530,38 +549,72 @@ function SimpleBracketView({
         />
       </div>
 
-      {/* Mobile list view */}
-      <div className="space-y-4 md:hidden">
-        {Array.from(rounds.entries())
-          .sort(([a], [b]) => a - b)
-          .map(([round, roundMatches]) => {
-            const label = getHungarianRoundLabel(round, totalRounds)
-            return (
-              <div key={round} className="space-y-2">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  {label}
-                </span>
+      {/* Mobile tabbed view */}
+      <div className="md:hidden">
+        <Tabs defaultValue="bracket" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="bracket">Ágrajz</TabsTrigger>
+            <TabsTrigger value="matches">Meccsek</TabsTrigger>
+          </TabsList>
+          <TabsContent value="bracket" className="pt-4">
+            <div className="space-y-4">
+              {Array.from(rounds.entries())
+                .sort(([a], [b]) => a - b)
+                .map(([round, roundMatches]) => {
+                  const label = getHungarianRoundLabel(round, totalRounds)
+                  return (
+                    <div key={round} className="space-y-2">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        {label}
+                      </span>
+                      <div className="space-y-2">
+                        {roundMatches.map((match) => (
+                          <BracketMatchCard
+                            key={match.id}
+                            match={match}
+                            teams={teams}
+                            tournamentId={tournamentId}
+                            className="w-full"
+                            showColoredAbbr
+                            groups={groups}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
+              {/* 3rd place match in bracket tab */}
+              {thirdPlaceMatch && (
                 <div className="space-y-2">
-                  {roundMatches.map((match) => (
-                    <BracketMatchCard
-                      key={match.id}
-                      match={match}
-                      teams={teams}
-                      tournamentId={tournamentId}
-                      className="w-full"
-                      showColoredAbbr
-                      groups={groups}
-                    />
-                  ))}
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    {stage === "main" ? "Bronzmérkőzés" : "11. helyért"}
+                  </span>
+                  <BracketMatchCard
+                    match={thirdPlaceMatch}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    className="w-full"
+                    showColoredAbbr
+                    groups={groups}
+                    variant="bronze"
+                  />
                 </div>
-              </div>
-            )
-          })}
+              )}
+            </div>
+          </TabsContent>
+          <TabsContent value="matches" className="pt-4">
+            <MobileMatchListView
+              matches={thirdPlaceMatch ? [...bracketMatches, thirdPlaceMatch] : bracketMatches}
+              teams={teams}
+              tournamentId={tournamentId}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
 
-      {/* 3rd place match */}
+      {/* 3rd place match - desktop only */}
       {thirdPlaceMatch && (
-        <div className="space-y-2">
+        <div className="hidden space-y-2 md:block">
           <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             {stage === "main" ? "Bronzmérkőzés" : "11. helyért"}
           </span>
@@ -730,8 +783,8 @@ function BracketWithConnectors({
   )
 }
 
-// Mobile list view for complex bracket
-function MobileListView({
+// Mobile bracket view for complex bracket (shows bracket structure)
+function MobileBracketView({
   categorized,
   teams,
   tournamentId,
@@ -756,7 +809,7 @@ function MobileListView({
   ]
 
   return (
-    <div className="space-y-4 md:hidden">
+    <div className="space-y-4">
       {sections.map(({ type, label }) => {
         const infos = categorized.get(type) ?? []
         if (infos.length === 0) return null
@@ -782,6 +835,48 @@ function MobileListView({
           </div>
         )
       })}
+    </div>
+  )
+}
+
+// Mobile match list view (shows all matches in a simple list with MatchCard)
+function MobileMatchListView({
+  matches,
+  teams,
+  tournamentId
+}: {
+  matches: Match[]
+  teams: Team[]
+  tournamentId: string
+}) {
+  // Sort matches: scheduled first, then by date/time
+  const sortedMatches = [...matches].sort((a, b) => {
+    // Completed matches at the bottom
+    if (a.status === "completed" && b.status !== "completed") return 1
+    if (a.status !== "completed" && b.status === "completed") return -1
+    
+    // Sort by date if available
+    if (a.scheduledTime && b.scheduledTime) {
+      return new Date(a.scheduledTime).getTime() - new Date(b.scheduledTime).getTime()
+    }
+    
+    // Sort by bracket round and position
+    if ((a.bracketRound ?? 0) !== (b.bracketRound ?? 0)) {
+      return (a.bracketRound ?? 0) - (b.bracketRound ?? 0)
+    }
+    return (a.bracketPosition ?? 0) - (b.bracketPosition ?? 0)
+  })
+
+  return (
+    <div className="space-y-2">
+      {sortedMatches.map((match) => (
+        <MatchCard
+          key={match.id}
+          match={match}
+          teams={teams}
+          tournamentId={tournamentId}
+        />
+      ))}
     </div>
   )
 }
