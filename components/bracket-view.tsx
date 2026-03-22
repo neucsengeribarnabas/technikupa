@@ -14,7 +14,7 @@ interface BracketViewProps {
 }
 
 // Match type labels for the complex bracket
-type MatchType = 
+type MatchType =
   | "qf"           // Quarter-finals (Negyeddöntő)
   | "sf"           // Semi-finals 1-4 (Elődöntő)
   | "sf58"         // Semi-finals 5-8 (5-8. helyért)
@@ -49,11 +49,11 @@ function getMatchLabel(type: MatchType, stage: MatchStage): string {
 function categorizeMatches(matches: Match[], stage: MatchStage): Map<MatchType, BracketMatchInfo[]> {
   const bracketMatches = matches.filter((m) => m.stage === stage)
   const result = new Map<MatchType, BracketMatchInfo[]>()
-  
+
   for (const match of bracketMatches) {
     const position = match.bracketPosition ?? 0
     let type: MatchType
-    
+
     if (match.id.includes("3rd")) {
       type = "3rd"
     } else if (match.id.includes("5th")) {
@@ -72,23 +72,23 @@ function categorizeMatches(matches: Match[], stage: MatchStage): Map<MatchType, 
       // Fallback
       type = "qf"
     }
-    
+
     const info: BracketMatchInfo = {
       match,
       type,
       label: getMatchLabel(type, stage),
       position
     }
-    
+
     if (!result.has(type)) result.set(type, [])
     result.get(type)!.push(info)
   }
-  
+
   // Sort each category by position
   for (const [_, infos] of result) {
     infos.sort((a, b) => a.position - b.position)
   }
-  
+
   return result
 }
 
@@ -98,13 +98,13 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
   if (bracketMatches.length === 0) {
     return (
       <div className="rounded-lg border bg-card p-8 text-center text-muted-foreground">
-        Még nincsenek kieséses mérkőzések. 
+        Még nincsenek kieséses mérkőzések.
       </div>
     )
   }
 
   const categorized = categorizeMatches(matches, stage)
-  
+
   const qf = categorized.get("qf") ?? []
   const sf = categorized.get("sf") ?? []
   const sf58 = categorized.get("sf58") ?? []
@@ -115,11 +115,11 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
 
   // Determine if we have a complex bracket with placement matches for 5-8
   const hasPlacementMatches = sf58.length > 0 || fifthPlace.length > 0 || seventhPlace.length > 0
-  
+
   // Simple bracket (no placement matches)
   if (!hasPlacementMatches) {
     return (
-      <SimpleBracketView 
+      <SimpleBracketView
         matches={matches}
         teams={teams}
         tournamentId={tournamentId}
@@ -129,7 +129,7 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
       />
     )
   }
-  
+
   const isConsolation = stage === "consolation"
 
   // Complex bracket with winner and placement matches (8 teams)
@@ -137,26 +137,26 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
   return (
     <div className="space-y-8">
       <h3 className="text-lg font-bold">{title}</h3>
-      
+
       {/* Desktop complex bracket view - CSS Grid layout: 5 columns x 4 rows */}
       <div className="hidden overflow-x-auto md:block">
         <div className="relative min-w-[1000px] pb-4">
           {/* CSS Grid: 5 columns, 4 rows - compact layout with labels */}
-          <div 
+          <div
             className="grid"
-            style={{ 
+            style={{
               gridTemplateColumns: 'repeat(5, 180px)',
-              gridTemplateRows: 'repeat(4, auto)',
+              gridTemplateRows: 'repeat(7, auto)',
               gap: '12px 16px',
               padding: '16px',
               justifyContent: 'center'
             }}
           >
             {/* ROW 1: SF losers on sides, QF1 center */}
-            <div style={{ gridColumn: 2, gridRow: 1 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 2, gridRow: 2 }} className="relative flex flex-col items-center">
               {sf58[0] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                  <span className="absolute -top-4 text-center text-[10px] font-medium text-muted-foreground">
                     {isConsolation ? "Helyosztó ED (13-16)" : "Helyosztó ED (5-8)"}
                   </span>
                   <BracketMatchCard
@@ -170,10 +170,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
-            <div style={{ gridColumn: 3, gridRow: 1 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 3, gridRow: 1 }} className="relative flex flex-col items-center">
               {qf[0] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
                   <BracketMatchCard
                     match={qf[0].match}
                     teams={teams}
@@ -184,10 +184,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
-            <div style={{ gridColumn: 4, gridRow: 1 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 4, gridRow: 2 }} className="relative flex flex-col items-center">
               {sf58[1] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
                     {isConsolation ? "Helyosztó ED (13-16)" : "Helyosztó ED (5-8)"}
                   </span>
                   <BracketMatchCard
@@ -203,10 +203,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
             </div>
 
             {/* ROW 2: 7th, 5th, QF2, Bronze, Final */}
-            <div style={{ gridColumn: 1, gridRow: 2 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 1, gridRow: 4 }} className="relative flex flex-col items-center">
               {seventhPlace[0] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
                     {isConsolation ? "15. helyért" : "7. helyért"}
                   </span>
                   <BracketMatchCard
@@ -220,10 +220,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
-            <div style={{ gridColumn: 2, gridRow: 2 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 2, gridRow: 4 }} className="relative flex flex-col items-center">
               {fifthPlace[0] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
                     {isConsolation ? "13. helyért" : "5. helyért"}
                   </span>
                   <BracketMatchCard
@@ -237,10 +237,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
-            <div style={{ gridColumn: 3, gridRow: 2 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 3, gridRow: 3 }} className="relative flex flex-col items-center">
               {qf[1] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
                   <BracketMatchCard
                     match={qf[1].match}
                     teams={teams}
@@ -251,10 +251,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
-            <div style={{ gridColumn: 4, gridRow: 2 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 4, gridRow: 4 }} className="relative flex flex-col items-center">
               {thirdPlace[0] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
                     {isConsolation ? "11. helyért" : "Bronzmeccs"}
                   </span>
                   <BracketMatchCard
@@ -268,10 +268,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
-            <div style={{ gridColumn: 5, gridRow: 2 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 5, gridRow: 4 }} className="relative flex flex-col items-center">
               {finalMatch[0] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">Döntő</span>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">Döntő</span>
                   <BracketMatchCard
                     match={finalMatch[0].match}
                     teams={teams}
@@ -285,10 +285,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
             </div>
 
             {/* ROW 3: QF3 center */}
-            <div style={{ gridColumn: 3, gridRow: 3 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 3, gridRow: 5 }} className="relative flex flex-col items-center">
               {qf[2] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
                   <BracketMatchCard
                     match={qf[2].match}
                     teams={teams}
@@ -301,10 +301,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
             </div>
 
             {/* ROW 4: SF Winners on sides, QF4 center */}
-            <div style={{ gridColumn: 2, gridRow: 4 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 2, gridRow: 6 }} className="relative flex flex-col items-center">
               {sf[0] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
                     {isConsolation ? "Helyosztó ED (9-12)" : "Elődöntő"}
                   </span>
                   <BracketMatchCard
@@ -317,10 +317,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
-            <div style={{ gridColumn: 3, gridRow: 4 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 3, gridRow: 7 }} className="relative flex flex-col items-center">
               {qf[3] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
                   <BracketMatchCard
                     match={qf[3].match}
                     teams={teams}
@@ -331,10 +331,10 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
                 </>
               )}
             </div>
-            <div style={{ gridColumn: 4, gridRow: 4 }} className="flex flex-col items-center">
+            <div style={{ gridColumn: 4, gridRow: 6 }} className="relative flex flex-col items-center">
               {sf[1] && (
                 <>
-                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
                     {isConsolation ? "Helyosztó ED (9-12)" : "Elődöntő"}
                   </span>
                   <BracketMatchCard
@@ -352,7 +352,7 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
       </div>
 
       {/* Mobile list view */}
-      <MobileListView 
+      <MobileListView
         categorized={categorized}
         teams={teams}
         tournamentId={tournamentId}
@@ -364,19 +364,19 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
 }
 
 // Simple bracket view for tournaments without losers bracket
-function SimpleBracketView({ 
-  matches, 
-  teams, 
-  tournamentId, 
-  stage, 
+function SimpleBracketView({
+  matches,
+  teams,
+  tournamentId,
+  stage,
   title,
-  groups 
+  groups
 }: BracketViewProps) {
   const bracketMatches = matches
-    .filter((m) => 
-      m.stage === stage && 
-      !m.id.includes("3rd") && 
-      !m.id.includes("5th") && 
+    .filter((m) =>
+      m.stage === stage &&
+      !m.id.includes("3rd") &&
+      !m.id.includes("5th") &&
       !m.id.includes("7th") &&
       !m.id.includes("sf58")
     )
@@ -419,7 +419,7 @@ function SimpleBracketView({
 
       {/* Desktop bracket view with connectors */}
       <div className="hidden overflow-x-auto md:block">
-        <BracketWithConnectors 
+        <BracketWithConnectors
           rounds={rounds}
           totalRounds={totalRounds}
           teams={teams}
@@ -508,31 +508,31 @@ function BracketWithConnectors({
       const gapMultiplier = Math.pow(2, round)
       const gap = gapMultiplier * 32 // gap in pixels
       const topPadding = (gapMultiplier - 1) * 24 // paddingTop in pixels
-      
+
       const positions = roundMatches.map((match, index) => {
         const y = HEADER_HEIGHT + topPadding + index * (CARD_HEIGHT + gap) + CARD_HEIGHT / 2
         return { match, y }
       })
-      
+
       return { round, matches: roundMatches, positions }
     })
 
   // Generate connector paths
   const connectors: { path: string; key: string }[] = []
-  
+
   for (let i = 0; i < roundPositions.length - 1; i++) {
     const currentRound = roundPositions[i]
     const nextRound = roundPositions[i + 1]
-    
+
     const xStart = (i + 1) * (CARD_WIDTH + CONNECTOR_WIDTH) - CONNECTOR_WIDTH / 2
     const xEnd = (i + 1) * (CARD_WIDTH + CONNECTOR_WIDTH) + CONNECTOR_WIDTH / 2
-    
+
     // Connect pairs of matches from current round to next round
     for (let j = 0; j < currentRound.positions.length; j += 2) {
       const match1 = currentRound.positions[j]
       const match2 = currentRound.positions[j + 1]
       const targetMatch = nextRound.positions[Math.floor(j / 2)]
-      
+
       if (match1 && match2 && targetMatch) {
         // Horizontal line from first match
         connectors.push({
@@ -566,17 +566,17 @@ function BracketWithConnectors({
   }
 
   return (
-    <div 
-      className="relative pb-4" 
+    <div
+      className="relative pb-4"
       style={{ minWidth: `${totalRounds * (CARD_WIDTH + CONNECTOR_WIDTH)}px` }}
     >
       {/* SVG Connectors */}
-      <svg 
-        className="pointer-events-none absolute left-0 top-0" 
-        style={{ 
+      <svg
+        className="pointer-events-none absolute left-0 top-0"
+        style={{
           width: `${totalRounds * (CARD_WIDTH + CONNECTOR_WIDTH)}px`,
           height: '600px',
-          zIndex: 0 
+          zIndex: 0
         }}
       >
         {connectors.map(({ path, key }) => (
@@ -598,7 +598,7 @@ function BracketWithConnectors({
           const isLastRound = round === totalRounds - 1
 
           return (
-            <div key={round} className="flex flex-col items-center" style={{ width: `${CARD_WIDTH}px` }}>
+            <div key={round} className="relative flex flex-col items-center" style={{ width: `${CARD_WIDTH}px` }}>
               <span className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 {label}
               </span>
@@ -630,13 +630,13 @@ function BracketWithConnectors({
 }
 
 // Mobile list view for complex bracket
-function MobileListView({ 
-  categorized, 
-  teams, 
+function MobileListView({
+  categorized,
+  teams,
   tournamentId,
   groups,
-  stage 
-}: { 
+  stage
+}: {
   categorized: Map<MatchType, BracketMatchInfo[]>
   teams: Team[]
   tournamentId: string
@@ -659,7 +659,7 @@ function MobileListView({
       {sections.map(({ type, label }) => {
         const infos = categorized.get(type) ?? []
         if (infos.length === 0) return null
-        
+
         return (
           <div key={type} className="space-y-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
