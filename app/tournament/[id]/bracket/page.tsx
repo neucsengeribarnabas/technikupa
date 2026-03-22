@@ -2,7 +2,7 @@
 
 import { use } from "react"
 import { useTournament } from "@/lib/tournament-context"
-import { BracketView } from "@/components/bracket-view"
+import { BracketView, BracketMatchList } from "@/components/bracket-view"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function BracketPage({ params }: { params: Promise<{ id: string }> }) {
@@ -17,6 +17,7 @@ export default function BracketPage({ params }: { params: Promise<{ id: string }
         <TabsList>
           <TabsTrigger value="main">Főág</TabsTrigger>
           <TabsTrigger value="consolation">Vigaszág</TabsTrigger>
+          <TabsTrigger value="matches">Meccsek</TabsTrigger>
         </TabsList>
 
         <TabsContent value="main" className="pt-4">
@@ -38,6 +39,14 @@ export default function BracketPage({ params }: { params: Promise<{ id: string }
             stage="consolation"
             title="Vigaszág"
             groups={tournament.groups}
+          />
+        </TabsContent>
+
+        <TabsContent value="matches" className="pt-4">
+          <BracketMatchList
+            matches={tournament.matches}
+            teams={tournament.teams}
+            tournamentId={tournament.id}
           />
         </TabsContent>
       </Tabs>
