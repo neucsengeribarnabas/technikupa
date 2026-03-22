@@ -138,135 +138,217 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
     <div className="space-y-8">
       <h3 className="text-lg font-bold">{title}</h3>
       
-      {/* Desktop complex bracket view */}
-      <div className="hidden overflow-x-auto lg:block">
-        <div className="min-w-[900px] pb-4">
-          {/* Column Headers */}
-          <div className="mb-4 grid grid-cols-5 gap-4">
-            <div className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Negyeddöntő
+      {/* Desktop complex bracket view - CSS Grid layout: 5 columns x 4 rows */}
+      <div className="hidden overflow-x-auto md:block">
+        <div className="relative min-w-[1000px] pb-4">
+          {/* CSS Grid: 5 columns, 4 rows - compact layout with labels */}
+          <div 
+            className="grid"
+            style={{ 
+              gridTemplateColumns: 'repeat(5, 180px)',
+              gridTemplateRows: 'repeat(4, auto)',
+              gap: '12px 16px',
+              padding: '16px',
+              justifyContent: 'center'
+            }}
+          >
+            {/* ROW 1: SF losers on sides, QF1 center */}
+            <div style={{ gridColumn: 2, gridRow: 1 }} className="flex flex-col items-center">
+              {sf58[0] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "Helyosztó ED (13-16)" : "Helyosztó ED (5-8)"}
+                  </span>
+                  <BracketMatchCard
+                    match={sf58[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant="losers"
+                  />
+                </>
+              )}
             </div>
-            <div className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {isConsolation ? "Elődöntő (9-12)" : "Elődöntő (1-4)"}
+            <div style={{ gridColumn: 3, gridRow: 1 }} className="flex flex-col items-center">
+              {qf[0] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
+                  <BracketMatchCard
+                    match={qf[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                  />
+                </>
+              )}
             </div>
-            <div className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {isConsolation ? "Elődöntő (13-16)" : "Elődöntő (5-8)"}
-            </div>
-            <div className="col-span-2 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Végeredmény
-            </div>
-          </div>
-
-          {/* Bracket Grid */}
-          <div className="relative grid grid-cols-5 gap-4">
-            {/* Column 1: Quarter-finals */}
-            <div className="flex flex-col justify-around gap-3">
-              {qf.map((info) => (
-                <BracketMatchCard
-                  key={info.match.id}
-                  match={info.match}
-                  teams={teams}
-                  tournamentId={tournamentId}
-                  showColoredAbbr
-                  groups={groups}
-                />
-              ))}
-            </div>
-
-            {/* Column 2: Semi-finals (1-4) */}
-            <div className="flex flex-col justify-around gap-6" style={{ paddingTop: '2.5rem', paddingBottom: '2.5rem' }}>
-              {sf.map((info) => (
-                <BracketMatchCard
-                  key={info.match.id}
-                  match={info.match}
-                  teams={teams}
-                  tournamentId={tournamentId}
-                  showColoredAbbr
-                  groups={groups}
-                />
-              ))}
-            </div>
-
-            {/* Column 3: Semi-finals (5-8) */}
-            <div className="flex flex-col justify-around gap-6" style={{ paddingTop: '2.5rem', paddingBottom: '2.5rem' }}>
-              {sf58.map((info) => (
-                <BracketMatchCard
-                  key={info.match.id}
-                  match={info.match}
-                  teams={teams}
-                  tournamentId={tournamentId}
-                  showColoredAbbr
-                  groups={groups}
-                  variant="losers"
-                />
-              ))}
-            </div>
-
-            {/* Column 4: Final + 3rd place */}
-            <div className="flex flex-col justify-around gap-4">
-              {finalMatch.map((info) => (
-                <BracketMatchCard
-                  key={info.match.id}
-                  match={info.match}
-                  teams={teams}
-                  tournamentId={tournamentId}
-                  showColoredAbbr
-                  groups={groups}
-                  variant="final"
-                />
-              ))}
-              {thirdPlace.map((info) => (
-                <BracketMatchCard
-                  key={info.match.id}
-                  match={info.match}
-                  teams={teams}
-                  tournamentId={tournamentId}
-                  showColoredAbbr
-                  groups={groups}
-                  variant="bronze"
-                />
-              ))}
+            <div style={{ gridColumn: 4, gridRow: 1 }} className="flex flex-col items-center">
+              {sf58[1] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "Helyosztó ED (13-16)" : "Helyosztó ED (5-8)"}
+                  </span>
+                  <BracketMatchCard
+                    match={sf58[1].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant="losers"
+                  />
+                </>
+              )}
             </div>
 
-            {/* Column 5: 5th and 7th place matches */}
-            <div className="flex flex-col justify-around gap-4">
-              {fifthPlace.map((info) => (
-                <BracketMatchCard
-                  key={info.match.id}
-                  match={info.match}
-                  teams={teams}
-                  tournamentId={tournamentId}
-                  showColoredAbbr
-                  groups={groups}
-                  variant="placement"
-                />
-              ))}
-              {seventhPlace.map((info) => (
-                <BracketMatchCard
-                  key={info.match.id}
-                  match={info.match}
-                  teams={teams}
-                  tournamentId={tournamentId}
-                  showColoredAbbr
-                  groups={groups}
-                  variant="placement"
-                />
-              ))}
+            {/* ROW 2: 7th, 5th, QF2, Bronze, Final */}
+            <div style={{ gridColumn: 1, gridRow: 2 }} className="flex flex-col items-center">
+              {seventhPlace[0] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "15. helyért" : "7. helyért"}
+                  </span>
+                  <BracketMatchCard
+                    match={seventhPlace[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant="placement"
+                  />
+                </>
+              )}
+            </div>
+            <div style={{ gridColumn: 2, gridRow: 2 }} className="flex flex-col items-center">
+              {fifthPlace[0] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "13. helyért" : "5. helyért"}
+                  </span>
+                  <BracketMatchCard
+                    match={fifthPlace[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant="placement"
+                  />
+                </>
+              )}
+            </div>
+            <div style={{ gridColumn: 3, gridRow: 2 }} className="flex flex-col items-center">
+              {qf[1] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
+                  <BracketMatchCard
+                    match={qf[1].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                  />
+                </>
+              )}
+            </div>
+            <div style={{ gridColumn: 4, gridRow: 2 }} className="flex flex-col items-center">
+              {thirdPlace[0] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "11. helyért" : "Bronzmeccs"}
+                  </span>
+                  <BracketMatchCard
+                    match={thirdPlace[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant="bronze"
+                  />
+                </>
+              )}
+            </div>
+            <div style={{ gridColumn: 5, gridRow: 2 }} className="flex flex-col items-center">
+              {finalMatch[0] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">Döntő</span>
+                  <BracketMatchCard
+                    match={finalMatch[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant="final"
+                  />
+                </>
+              )}
+            </div>
+
+            {/* ROW 3: QF3 center */}
+            <div style={{ gridColumn: 3, gridRow: 3 }} className="flex flex-col items-center">
+              {qf[2] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
+                  <BracketMatchCard
+                    match={qf[2].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                  />
+                </>
+              )}
+            </div>
+
+            {/* ROW 4: SF Winners on sides, QF4 center */}
+            <div style={{ gridColumn: 2, gridRow: 4 }} className="flex flex-col items-center">
+              {sf[0] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "Helyosztó ED (9-12)" : "Elődöntő"}
+                  </span>
+                  <BracketMatchCard
+                    match={sf[0].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                  />
+                </>
+              )}
+            </div>
+            <div style={{ gridColumn: 3, gridRow: 4 }} className="flex flex-col items-center">
+              {qf[3] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">Negyeddöntő</span>
+                  <BracketMatchCard
+                    match={qf[3].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                  />
+                </>
+              )}
+            </div>
+            <div style={{ gridColumn: 4, gridRow: 4 }} className="flex flex-col items-center">
+              {sf[1] && (
+                <>
+                  <span className="mb-1 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "Helyosztó ED (9-12)" : "Elődöntő"}
+                  </span>
+                  <BracketMatchCard
+                    match={sf[1].match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Tablet view */}
-      <div className="hidden overflow-x-auto md:block lg:hidden">
-        <SimpleBracketView 
-          matches={matches}
-          teams={teams}
-          tournamentId={tournamentId}
-          stage={stage}
-          title=""
-          groups={groups}
-        />
       </div>
 
       {/* Mobile list view */}
@@ -335,47 +417,16 @@ function SimpleBracketView({
     <div className="space-y-6">
       {title && <h3 className="text-lg font-bold">{title}</h3>}
 
-      {/* Desktop bracket view */}
+      {/* Desktop bracket view with connectors */}
       <div className="hidden overflow-x-auto md:block">
-        <div 
-          className="inline-flex items-start gap-6 pb-4" 
-          style={{ minWidth: `${totalRounds * 220}px` }}
-        >
-          {Array.from(rounds.entries())
-            .sort(([a], [b]) => a - b)
-            .map(([round, roundMatches]) => {
-              const label = getHungarianRoundLabel(round, totalRounds)
-              const gapMultiplier = Math.pow(2, round)
-              const isLastRound = round === totalRounds - 1
-
-              return (
-                <div key={round} className="flex flex-col items-center">
-                  <span className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    {label}
-                  </span>
-                  <div
-                    className="flex flex-col justify-around"
-                    style={{
-                      gap: `${gapMultiplier * 2}rem`,
-                      paddingTop: `${(gapMultiplier - 1) * 1.5}rem`,
-                    }}
-                  >
-                    {roundMatches.map((match) => (
-                      <BracketMatchCard
-                        key={match.id}
-                        match={match}
-                        teams={teams}
-                        tournamentId={tournamentId}
-                        showColoredAbbr
-                        groups={groups}
-                        variant={isLastRound ? "final" : "default"}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )
-            })}
-        </div>
+        <BracketWithConnectors 
+          rounds={rounds}
+          totalRounds={totalRounds}
+          teams={teams}
+          tournamentId={tournamentId}
+          groups={groups}
+          getHungarianRoundLabel={getHungarianRoundLabel}
+        />
       </div>
 
       {/* Mobile list view */}
@@ -424,6 +475,156 @@ function SimpleBracketView({
           />
         </div>
       )}
+    </div>
+  )
+}
+
+// Bracket with visual connectors
+function BracketWithConnectors({
+  rounds,
+  totalRounds,
+  teams,
+  tournamentId,
+  groups,
+  getHungarianRoundLabel
+}: {
+  rounds: Map<number, Match[]>
+  totalRounds: number
+  teams: Team[]
+  tournamentId: string
+  groups?: Group[]
+  getHungarianRoundLabel: (round: number, totalRounds: number) => string
+}) {
+  const CARD_HEIGHT = 72 // Height of each match card in pixels
+  const CARD_WIDTH = 180 // Width of each match card
+  const CONNECTOR_WIDTH = 40 // Width of connector space between columns
+  const HEADER_HEIGHT = 32 // Height of the column header
+
+  // Calculate vertical positions for matches in each round
+  const roundPositions = Array.from(rounds.entries())
+    .sort(([a], [b]) => a - b)
+    .map(([round, roundMatches]) => {
+      const matchCount = roundMatches.length
+      const gapMultiplier = Math.pow(2, round)
+      const gap = gapMultiplier * 32 // gap in pixels
+      const topPadding = (gapMultiplier - 1) * 24 // paddingTop in pixels
+      
+      const positions = roundMatches.map((match, index) => {
+        const y = HEADER_HEIGHT + topPadding + index * (CARD_HEIGHT + gap) + CARD_HEIGHT / 2
+        return { match, y }
+      })
+      
+      return { round, matches: roundMatches, positions }
+    })
+
+  // Generate connector paths
+  const connectors: { path: string; key: string }[] = []
+  
+  for (let i = 0; i < roundPositions.length - 1; i++) {
+    const currentRound = roundPositions[i]
+    const nextRound = roundPositions[i + 1]
+    
+    const xStart = (i + 1) * (CARD_WIDTH + CONNECTOR_WIDTH) - CONNECTOR_WIDTH / 2
+    const xEnd = (i + 1) * (CARD_WIDTH + CONNECTOR_WIDTH) + CONNECTOR_WIDTH / 2
+    
+    // Connect pairs of matches from current round to next round
+    for (let j = 0; j < currentRound.positions.length; j += 2) {
+      const match1 = currentRound.positions[j]
+      const match2 = currentRound.positions[j + 1]
+      const targetMatch = nextRound.positions[Math.floor(j / 2)]
+      
+      if (match1 && match2 && targetMatch) {
+        // Horizontal line from first match
+        connectors.push({
+          key: `h1-${i}-${j}`,
+          path: `M ${xStart - 10} ${match1.y} H ${xStart + 5}`
+        })
+        // Horizontal line from second match
+        connectors.push({
+          key: `h2-${i}-${j}`,
+          path: `M ${xStart - 10} ${match2.y} H ${xStart + 5}`
+        })
+        // Vertical line connecting them
+        connectors.push({
+          key: `v-${i}-${j}`,
+          path: `M ${xStart + 5} ${match1.y} V ${match2.y}`
+        })
+        // Horizontal line to target
+        const midY = (match1.y + match2.y) / 2
+        connectors.push({
+          key: `ht-${i}-${j}`,
+          path: `M ${xStart + 5} ${midY} H ${xEnd + 10}`
+        })
+      } else if (match1 && targetMatch) {
+        // Single match connector (for finals)
+        connectors.push({
+          key: `single-${i}-${j}`,
+          path: `M ${xStart - 10} ${match1.y} H ${xEnd + 10}`
+        })
+      }
+    }
+  }
+
+  return (
+    <div 
+      className="relative pb-4" 
+      style={{ minWidth: `${totalRounds * (CARD_WIDTH + CONNECTOR_WIDTH)}px` }}
+    >
+      {/* SVG Connectors */}
+      <svg 
+        className="pointer-events-none absolute left-0 top-0" 
+        style={{ 
+          width: `${totalRounds * (CARD_WIDTH + CONNECTOR_WIDTH)}px`,
+          height: '600px',
+          zIndex: 0 
+        }}
+      >
+        {connectors.map(({ path, key }) => (
+          <path
+            key={key}
+            d={path}
+            stroke="#d1d5db"
+            strokeWidth="2"
+            fill="none"
+          />
+        ))}
+      </svg>
+
+      {/* Match Cards Grid */}
+      <div className="relative z-10 flex items-start" style={{ gap: `${CONNECTOR_WIDTH}px` }}>
+        {roundPositions.map(({ round, matches }) => {
+          const label = getHungarianRoundLabel(round, totalRounds)
+          const gapMultiplier = Math.pow(2, round)
+          const isLastRound = round === totalRounds - 1
+
+          return (
+            <div key={round} className="flex flex-col items-center" style={{ width: `${CARD_WIDTH}px` }}>
+              <span className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {label}
+              </span>
+              <div
+                className="flex flex-col justify-around"
+                style={{
+                  gap: `${gapMultiplier * 2}rem`,
+                  paddingTop: `${(gapMultiplier - 1) * 1.5}rem`,
+                }}
+              >
+                {matches.map((match) => (
+                  <BracketMatchCard
+                    key={match.id}
+                    match={match}
+                    teams={teams}
+                    tournamentId={tournamentId}
+                    showColoredAbbr
+                    groups={groups}
+                    variant={isLastRound ? "final" : "default"}
+                  />
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

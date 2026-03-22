@@ -1,7 +1,7 @@
 {
   "tournaments": [
     {
-      "id": "tournament",
+      "id": "btlb",
       "name": "My Tournament",
       "description": "",
       "status": "bracket_stage",
@@ -650,14 +650,10 @@
           "bracketPosition": 0,
           "homeTeamId": "team-1",
           "awayTeamId": "team-9",
-          "homeScore": 1,
-          "awayScore": 0,
-          "status": "completed",
-          "nextMatchId": null,
-          "homeYellowCards": 0,
-          "awayYellowCards": 0,
-          "homeRedCards": 0,
-          "awayRedCards": 0
+          "homeScore": null,
+          "awayScore": null,
+          "status": "scheduled",
+          "nextMatchId": null
         },
         {
           "id": "main-3rd-1007",
@@ -960,7 +956,7 @@
         }
       ],
       "createdAt": "2026-03-21T17:55:12.003Z",
-      "updatedAt": "2026-03-21T18:41:17.311Z",
+      "updatedAt": "2026-03-22T00:33:00.642Z",
       "groupStageLocked": true,
       "bracketStageLocked": false
     }
