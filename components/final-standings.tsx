@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import type { Tournament, Team } from "@/lib/types"
 import { calculateGroupStandings, type Placement, calculateFinalPlacements } from "@/lib/tournament-engine"
 import { TeamBadge } from "@/components/team-badge"
@@ -32,13 +33,14 @@ export function FinalStandings({ tournament }: FinalStandingsProps) {
   return (
     <div className="space-y-3">
       {placements.map((p) => (
-        <div
+        <Link
           key={p.teamId}
+          href={`/tournament/${tournament.id}/team/${p.teamId}`}
           className={cn(
-            "flex items-center gap-4 rounded-lg border bg-card px-4 py-3 transition-colors",
-            p.position === 1 && "border-yellow-500/30 bg-yellow-500/5",
-            p.position === 2 && "border-zinc-400/30 bg-zinc-400/5",
-            p.position === 3 && "border-amber-700/30 bg-amber-700/5",
+            "flex items-center gap-4 rounded-lg border bg-card px-4 py-3 transition-colors hover:border-primary/50 hover:shadow-md",
+            p.position === 1 && "border-yellow-500/30 bg-yellow-500/5 hover:border-yellow-500/50",
+            p.position === 2 && "border-zinc-400/30 bg-zinc-400/5 hover:border-zinc-400/50",
+            p.position === 3 && "border-amber-700/30 bg-amber-700/5 hover:border-amber-700/50",
           )}
         >
           {/* Position */}
@@ -63,7 +65,6 @@ export function FinalStandings({ tournament }: FinalStandingsProps) {
             />
             <div>
               <span className="font-medium">{p.team.name}</span>
-
             </div>
           </div>
 
@@ -71,7 +72,7 @@ export function FinalStandings({ tournament }: FinalStandingsProps) {
           <span className="text-sm font-medium text-muted-foreground">
             {getOrdinal(p.position)}
           </span>
-        </div>
+        </Link>
       ))}
     </div>
   )

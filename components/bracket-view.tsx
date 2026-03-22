@@ -4,6 +4,7 @@ import type { Match, Team, MatchStage, Group } from "@/lib/types"
 import { BracketMatchCard } from "@/components/bracket-match-card"
 import { cn } from "@/lib/utils"
 
+
 interface BracketViewProps {
   matches: Match[]
   teams: Team[]
@@ -152,198 +153,298 @@ export function BracketView({ matches, teams, tournamentId, stage, title, groups
               justifyContent: 'center'
             }}
           >
-            {/* ROW 1: SF losers on sides, QF1 center */}
+            {/* QF1 - top */}
+            <div style={{ gridColumn: 3, gridRow: 1 }} className="relative flex flex-col items-center">
+              {qf[0] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
+                  <div className="relative">
+                    {/* Winner arrow to SF - green going right then down */}
+                    <div className="absolute -right-4 top-[25%] h-0.5 w-4 bg-green-500" />
+                    <div className="absolute -right-4 top-[25%] h-[calc(100%+24px)] w-0.5 bg-green-500" />
+                    {/* Loser arrow to SF58 - red going left then down */}
+                    <div className="absolute -left-4 bottom-[25%] h-0.5 w-4 bg-red-500" />
+                    <div className="absolute -left-4 bottom-[25%] h-[calc(100%+24px)] w-0.5 bg-red-500" />
+                    <BracketMatchCard
+                      match={qf[0].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* SF58 Upper - 5-8 placement semi */}
             <div style={{ gridColumn: 2, gridRow: 2 }} className="relative flex flex-col items-center">
               {sf58[0] && (
                 <>
                   <span className="absolute -top-4 text-center text-[10px] font-medium text-muted-foreground">
                     {isConsolation ? "Helyosztó ED (13-16)" : "Helyosztó ED (5-8)"}
                   </span>
-                  <BracketMatchCard
-                    match={sf58[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                    variant="losers"
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 3, gridRow: 1 }} className="relative flex flex-col items-center">
-              {qf[0] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
-                  <BracketMatchCard
-                    match={qf[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 2, gridRow: 6 }} className="relative flex flex-col items-center">
-              {sf58[1] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
-                    {isConsolation ? "Helyosztó ED (13-16)" : "Helyosztó ED (5-8)"}
-                  </span>
-                  <BracketMatchCard
-                    match={sf58[1].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                    variant="losers"
-                  />
+                  <div className="relative">
+                    {/* Entry from QF loser - red from top */}
+                    <div className="absolute -top-6 left-1/2 h-6 w-0.5 -translate-x-1/2 bg-red-500" />
+                    {/* Winner to 5th place - green down */}
+                    <div className="absolute -bottom-6 left-[30%] h-6 w-0.5 bg-green-500" />
+                    {/* Loser to 7th place - red left */}
+                    <div className="absolute -left-4 bottom-[25%] h-0.5 w-4 bg-red-500" />
+                    <BracketMatchCard
+                      match={sf58[0].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                      variant="losers"
+                    />
+                  </div>
                 </>
               )}
             </div>
 
-            {/* ROW 2: 7th, 5th, QF2, Bronze, Final */}
-            <div style={{ gridColumn: 1, gridRow: 4 }} className="relative flex flex-col items-center">
-              {seventhPlace[0] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
-                    {isConsolation ? "15. helyért" : "7. helyért"}
-                  </span>
-                  <BracketMatchCard
-                    match={seventhPlace[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                    variant="placement"
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 2, gridRow: 4 }} className="relative flex flex-col items-center">
-              {fifthPlace[0] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
-                    {isConsolation ? "13. helyért" : "5. helyért"}
-                  </span>
-                  <BracketMatchCard
-                    match={fifthPlace[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                    variant="placement"
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 3, gridRow: 3 }} className="relative flex flex-col items-center">
-              {qf[1] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
-                  <BracketMatchCard
-                    match={qf[1].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 4, gridRow: 4 }} className="relative flex flex-col items-center">
-              {thirdPlace[0] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
-                    {isConsolation ? "11. helyért" : "Bronzmeccs"}
-                  </span>
-                  <BracketMatchCard
-                    match={thirdPlace[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                    variant="bronze"
-                  />
-                </>
-              )}
-            </div>
-            <div style={{ gridColumn: 5, gridRow: 4 }} className="relative flex flex-col items-center">
-              {finalMatch[0] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "9. helyért" : "Döntő"}</span>
-                  <BracketMatchCard
-                    match={finalMatch[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                    variant="final"
-                  />
-                </>
-              )}
-            </div>
-
-            {/* ROW 3: QF3 center */}
-            <div style={{ gridColumn: 3, gridRow: 5 }} className="relative flex flex-col items-center">
-              {qf[2] && (
-                <>
-                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
-                  <BracketMatchCard
-                    match={qf[2].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                  />
-                </>
-              )}
-            </div>
-
-            {/* ROW 4: SF Winners on sides, QF4 center */}
+            {/* SF Upper - main semi-final */}
             <div style={{ gridColumn: 4, gridRow: 2 }} className="relative flex flex-col items-center">
               {sf[0] && (
                 <>
                   <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
                     {isConsolation ? "Helyosztó ED (9-12)" : "Elődöntő"}
                   </span>
-                  <BracketMatchCard
-                    match={sf[0].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                  />
+                  <div className="relative">
+                    {/* Entry from QF winner - green from left then up */}
+                    <div className="absolute -left-4 top-[25%] h-0.5 w-4 bg-green-500" />
+                    {/* Winner to final - green down */}
+                    <div className="absolute -bottom-6 left-[30%] h-6 w-0.5 bg-green-500" />
+                    {/* Loser to bronze - red down */}
+                    <div className="absolute -bottom-6 right-[30%] h-6 w-0.5 bg-red-500" />
+                    <BracketMatchCard
+                      match={sf[0].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                    />
+                  </div>
                 </>
               )}
             </div>
-            <div style={{ gridColumn: 3, gridRow: 7 }} className="relative flex flex-col items-center">
-              {qf[3] && (
+
+            {/* QF2 */}
+            <div style={{ gridColumn: 3, gridRow: 3 }} className="relative flex flex-col items-center">
+              {qf[1] && (
                 <>
                   <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
-                  <BracketMatchCard
-                    match={qf[3].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                  />
+                  <div className="relative">
+                    {/* Winner arrow to SF - green going right then up */}
+                    <div className="absolute -right-4 top-[25%] h-0.5 w-4 bg-green-500" />
+                    <div className="absolute -right-4 top-[calc(-100%-24px)] h-[calc(100%+48px)] w-0.5 bg-green-500" />
+                    {/* Loser arrow to SF58 - red going left then up */}
+                    <div className="absolute -left-4 bottom-[25%] h-0.5 w-4 bg-red-500" />
+                    <div className="absolute -left-4 top-[calc(-100%-24px)] h-[calc(100%+48px)] w-0.5 bg-red-500" />
+                    <BracketMatchCard
+                      match={qf[1].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                    />
+                  </div>
                 </>
               )}
             </div>
+
+            {/* 7th place */}
+            <div style={{ gridColumn: 1, gridRow: 4 }} className="relative flex flex-col items-center">
+              {seventhPlace[0] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "15. helyért" : "7. helyért"}
+                  </span>
+                  <div className="relative">
+                    {/* Entry from SF58 losers - red from top and bottom */}
+                    <div className="absolute -top-6 right-[30%] h-6 w-0.5 bg-red-500" />
+                    <div className="absolute -bottom-6 right-[30%] h-6 w-0.5 bg-red-500" />
+                    <BracketMatchCard
+                      match={seventhPlace[0].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                      variant="placement"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* 5th place */}
+            <div style={{ gridColumn: 2, gridRow: 4 }} className="relative flex flex-col items-center">
+              {fifthPlace[0] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "13. helyért" : "5. helyért"}
+                  </span>
+                  <div className="relative">
+                    {/* Entry from SF58 winners - green from top and bottom */}
+                    <div className="absolute -top-6 left-[30%] h-6 w-0.5 bg-green-500" />
+                    <div className="absolute -bottom-6 left-[30%] h-6 w-0.5 bg-green-500" />
+                    <BracketMatchCard
+                      match={fifthPlace[0].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                      variant="placement"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Bronze match */}
+            <div style={{ gridColumn: 4, gridRow: 4 }} className="relative flex flex-col items-center">
+              {thirdPlace[0] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "11. helyért" : "Bronzmeccs"}
+                  </span>
+                  <div className="relative">
+                    {/* Entry from SF losers - red from top and bottom */}
+                    <div className="absolute -top-6 right-[30%] h-6 w-0.5 bg-red-500" />
+                    <div className="absolute -bottom-6 right-[30%] h-6 w-0.5 bg-red-500" />
+                    <BracketMatchCard
+                      match={thirdPlace[0].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                      variant="bronze"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Final */}
+            <div style={{ gridColumn: 5, gridRow: 4 }} className="relative flex flex-col items-center">
+              {finalMatch[0] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "9. helyért" : "Döntő"}</span>
+                  <div className="relative">
+                    {/* Entry from SF winners - green from top and bottom */}
+                    <div className="absolute -top-6 left-[30%] h-6 w-0.5 bg-green-500" />
+                    <div className="absolute -bottom-6 left-[30%] h-6 w-0.5 bg-green-500" />
+                    <BracketMatchCard
+                      match={finalMatch[0].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                      variant="final"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* QF3 */}
+            <div style={{ gridColumn: 3, gridRow: 5 }} className="relative flex flex-col items-center">
+              {qf[2] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
+                  <div className="relative">
+                    {/* Winner arrow to SF - green going right then down */}
+                    <div className="absolute -right-4 bottom-[25%] h-0.5 w-4 bg-green-500" />
+                    <div className="absolute -right-4 bottom-[25%] h-[calc(100%+24px)] w-0.5 bg-green-500" />
+                    {/* Loser arrow to SF58 - red going left then down */}
+                    <div className="absolute -left-4 top-[25%] h-0.5 w-4 bg-red-500" />
+                    <div className="absolute -left-4 top-[25%] h-[calc(100%+24px)] w-0.5 bg-red-500" />
+                    <BracketMatchCard
+                      match={qf[2].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* SF58 Lower */}
+            <div style={{ gridColumn: 2, gridRow: 6 }} className="relative flex flex-col items-center">
+              {sf58[1] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
+                    {isConsolation ? "Helyosztó ED (13-16)" : "Helyosztó ED (5-8)"}
+                  </span>
+                  <div className="relative">
+                    {/* Entry from QF loser - red from bottom */}
+                    <div className="absolute -bottom-6 left-1/2 h-6 w-0.5 -translate-x-1/2 bg-red-500" />
+                    {/* Winner to 5th place - green up */}
+                    <div className="absolute -top-6 left-[30%] h-6 w-0.5 bg-green-500" />
+                    {/* Loser to 7th place - red left */}
+                    <div className="absolute -left-4 top-[25%] h-0.5 w-4 bg-red-500" />
+                    <BracketMatchCard
+                      match={sf58[1].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                      variant="losers"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* SF Lower */}
             <div style={{ gridColumn: 4, gridRow: 6 }} className="relative flex flex-col items-center">
               {sf[1] && (
                 <>
                   <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">
                     {isConsolation ? "Helyosztó ED (9-12)" : "Elődöntő"}
                   </span>
-                  <BracketMatchCard
-                    match={sf[1].match}
-                    teams={teams}
-                    tournamentId={tournamentId}
-                    showColoredAbbr
-                    groups={groups}
-                  />
+                  <div className="relative">
+                    {/* Entry from QF winner - green from left */}
+                    <div className="absolute -left-4 bottom-[25%] h-0.5 w-4 bg-green-500" />
+                    {/* Winner to final - green up */}
+                    <div className="absolute -top-6 left-[30%] h-6 w-0.5 bg-green-500" />
+                    {/* Loser to bronze - red up */}
+                    <div className="absolute -top-6 right-[30%] h-6 w-0.5 bg-red-500" />
+                    <BracketMatchCard
+                      match={sf[1].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* QF4 */}
+            <div style={{ gridColumn: 3, gridRow: 7 }} className="relative flex flex-col items-center">
+              {qf[3] && (
+                <>
+                  <span className="absolute -top-4 text-[10px] font-medium text-muted-foreground">{isConsolation ? "Negyeddöntő (9-16)" : "Negyeddöntő"}</span>
+                  <div className="relative">
+                    {/* Winner arrow to SF - green going right then up */}
+                    <div className="absolute -right-4 bottom-[25%] h-0.5 w-4 bg-green-500" />
+                    <div className="absolute -right-4 bottom-[calc(100%+24px)] h-[calc(100%+48px)] w-0.5 bg-green-500" />
+                    {/* Loser arrow to SF58 - red going left then up */}
+                    <div className="absolute -left-4 top-[25%] h-0.5 w-4 bg-red-500" />
+                    <div className="absolute -left-4 bottom-[calc(100%+24px)] h-[calc(100%+48px)] w-0.5 bg-red-500" />
+                    <BracketMatchCard
+                      match={qf[3].match}
+                      teams={teams}
+                      tournamentId={tournamentId}
+                      showColoredAbbr
+                      groups={groups}
+                    />
+                  </div>
                 </>
               )}
             </div>
