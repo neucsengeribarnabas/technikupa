@@ -521,6 +521,7 @@ export function calculateFinalPlacements(
   const placements: Placement[] = []
   const teams = tournament.teams
   const matches = tournament.matches
+  const placedTeamIds = new Set<string>()
 
   const mainMatches = matches.filter((m) => m.stage === "main")
   const consolationMatches = matches.filter((m) => m.stage === "consolation")
@@ -531,126 +532,71 @@ export function calculateFinalPlacements(
   const consolationFinal = findFinalMatch(consolationMatches)
   const consolationThirdPlace = findThirdPlaceMatch(consolationMatches)
 
-  let pos = 1
+  // Helper to add placement and track placed teams
+  function addPlacement(position: number, teamId: string | null, source: string) {
+    if (!teamId || placedTeamIds.has(teamId)) return false
+    placedTeamIds.add(teamId)
+    placements.push({ position, teamId, team: findTeam(teams, teamId), source })
+    return true
+  }
+
+  // Helper to get winner and loser from a match
+  function getMatchResult(match: Match | null): { winnerId: string | null; loserId: string | null } {
+    if (!match || match.status !== "completed" || match.homeScore == null || match.awayScore == null) {
+      return { winnerId: null, loserId: null }
+    }
+    const winnerId = match.homeScore > match.awayScore ? match.homeTeamId : match.awayTeamId
+    const loserId = match.homeScore > match.awayScore ? match.awayTeamId : match.homeTeamId
+    return { winnerId, loserId }
+  }
 
   // 1st and 2nd from main final
-  if (mainFinal && mainFinal.status === "completed" && mainFinal.homeScore != null && mainFinal.awayScore != null) {
-    const winnerId = mainFinal.homeScore > mainFinal.awayScore ? mainFinal.homeTeamId : mainFinal.awayTeamId
-    const loserId = mainFinal.homeScore > mainFinal.awayScore ? mainFinal.awayTeamId : mainFinal.homeTeamId
-    if (winnerId) placements.push({ position: pos++, teamId: winnerId, team: findTeam(teams, winnerId), source: "Champion" })
-    if (loserId) placements.push({ position: pos++, teamId: loserId, team: findTeam(teams, loserId), source: "Runner-up" })
-  } else {
-    pos = 3
-  }
+  const mainFinalResult = getMatchResult(mainFinal)
+  addPlacement(1, mainFinalResult.winnerId, "Bajnok")
+  addPlacement(2, mainFinalResult.loserId, "Ezüstérmes")
 
   // 3rd and 4th from main 3rd place match
-  if (mainThirdPlace && mainThirdPlace.status === "completed" && mainThirdPlace.homeScore != null && mainThirdPlace.awayScore != null) {
-    const winnerId = mainThirdPlace.homeScore > mainThirdPlace.awayScore ? mainThirdPlace.homeTeamId : mainThirdPlace.awayTeamId
-    const loserId = mainThirdPlace.homeScore > mainThirdPlace.awayScore ? mainThirdPlace.awayTeamId : mainThirdPlace.homeTeamId
-    if (winnerId) placements.push({ position: pos++, teamId: winnerId, team: findTeam(teams, winnerId), source: "3rd Place Match Winner" })
-    if (loserId) placements.push({ position: pos++, teamId: loserId, team: findTeam(teams, loserId), source: "3rd Place Match Loser" })
-  } else {
-    pos = 5
-  }
+  const mainThirdResult = getMatchResult(mainThirdPlace)
+  addPlacement(3, mainThirdResult.winnerId, "Bronzérmes")
+  addPlacement(4, mainThirdResult.loserId, "4. helyezett")
 
   // 5th and 6th from 5th place match
   const fifthPlaceMatch = mainMatches.find((m) => m.id.includes("5th"))
-  if (fifthPlaceMatch && fifthPlaceMatch.status === "completed" && fifthPlaceMatch.homeScore != null && fifthPlaceMatch.awayScore != null) {
-    const winnerId = fifthPlaceMatch.homeScore > fifthPlaceMatch.awayScore ? fifthPlaceMatch.homeTeamId : fifthPlaceMatch.awayTeamId
-    const loserId = fifthPlaceMatch.homeScore > fifthPlaceMatch.awayScore ? fifthPlaceMatch.awayTeamId : fifthPlaceMatch.homeTeamId
-    if (winnerId && !placements.find((p) => p.teamId === winnerId)) {
-      placements.push({ position: pos++, teamId: winnerId, team: findTeam(teams, winnerId), source: "5th Place Match Winner" })
-    }
-    if (loserId && !placements.find((p) => p.teamId === loserId)) {
-      placements.push({ position: pos++, teamId: loserId, team: findTeam(teams, loserId), source: "5th Place Match Loser" })
-    }
-  } else {
-    pos = Math.max(pos, 7)
-  }
+  const fifthResult = getMatchResult(fifthPlaceMatch ?? null)
+  addPlacement(5, fifthResult.winnerId, "5. helyezett")
+  addPlacement(6, fifthResult.loserId, "6. helyezett")
 
   // 7th and 8th from 7th place match
   const seventhPlaceMatch = mainMatches.find((m) => m.id.includes("7th"))
-  if (seventhPlaceMatch && seventhPlaceMatch.status === "completed" && seventhPlaceMatch.homeScore != null && seventhPlaceMatch.awayScore != null) {
-    const winnerId = seventhPlaceMatch.homeScore > seventhPlaceMatch.awayScore ? seventhPlaceMatch.homeTeamId : seventhPlaceMatch.awayTeamId
-    const loserId = seventhPlaceMatch.homeScore > seventhPlaceMatch.awayScore ? seventhPlaceMatch.awayTeamId : seventhPlaceMatch.homeTeamId
-    if (winnerId && !placements.find((p) => p.teamId === winnerId)) {
-      placements.push({ position: pos++, teamId: winnerId, team: findTeam(teams, winnerId), source: "7th Place Match Winner" })
-    }
-    if (loserId && !placements.find((p) => p.teamId === loserId)) {
-      placements.push({ position: pos++, teamId: loserId, team: findTeam(teams, loserId), source: "7th Place Match Loser" })
-    }
-  } else {
-    // Fallback: 5th-8th from main bracket semi-final losers (ordered by group standing)
-    const mainSFLosers = getSemiFinalLosers(mainMatches, teams)
-    for (const team of mainSFLosers) {
-      if (!placements.find((p) => p.teamId === team.id)) {
-        placements.push({ position: pos++, teamId: team.id, team, source: "Main Bracket QF/SF" })
-      }
-    }
-  }
-  pos = Math.max(pos, 9)
+  const seventhResult = getMatchResult(seventhPlaceMatch ?? null)
+  addPlacement(7, seventhResult.winnerId, "7. helyezett")
+  addPlacement(8, seventhResult.loserId, "8. helyezett")
 
-  // 9th-16th from consolation bracket (same logic as main)
-  if (consolationFinal && consolationFinal.status === "completed" && consolationFinal.homeScore != null && consolationFinal.awayScore != null) {
-    const winnerId = consolationFinal.homeScore > consolationFinal.awayScore ? consolationFinal.homeTeamId : consolationFinal.awayTeamId
-    const loserId = consolationFinal.homeScore > consolationFinal.awayScore ? consolationFinal.awayTeamId : consolationFinal.homeTeamId
-    if (winnerId) placements.push({ position: pos++, teamId: winnerId, team: findTeam(teams, winnerId), source: "Consolation Winner (9th)" })
-    if (loserId) placements.push({ position: pos++, teamId: loserId, team: findTeam(teams, loserId), source: "Consolation Runner-up (10th)" })
-  } else {
-    pos = Math.max(pos, 11)
-  }
+  // 9th and 10th from consolation final
+  const consolationFinalResult = getMatchResult(consolationFinal)
+  addPlacement(9, consolationFinalResult.winnerId, "9. helyezett")
+  addPlacement(10, consolationFinalResult.loserId, "10. helyezett")
 
-  // 11th-12th from consolation 3rd place match
-  if (consolationThirdPlace && consolationThirdPlace.status === "completed" && consolationThirdPlace.homeScore != null && consolationThirdPlace.awayScore != null) {
-    const winnerId = consolationThirdPlace.homeScore > consolationThirdPlace.awayScore ? consolationThirdPlace.homeTeamId : consolationThirdPlace.awayTeamId
-    const loserId = consolationThirdPlace.homeScore > consolationThirdPlace.awayScore ? consolationThirdPlace.awayTeamId : consolationThirdPlace.homeTeamId
-    if (winnerId && !placements.find((p) => p.teamId === winnerId)) {
-      placements.push({ position: pos++, teamId: winnerId, team: findTeam(teams, winnerId), source: "Consolation 3rd Place (11th)" })
-    }
-    if (loserId && !placements.find((p) => p.teamId === loserId)) {
-      placements.push({ position: pos++, teamId: loserId, team: findTeam(teams, loserId), source: "Consolation 4th Place (12th)" })
-    }
-  } else {
-    pos = Math.max(pos, 13)
-  }
+  // 11th and 12th from consolation 3rd place match
+  const consolationThirdResult = getMatchResult(consolationThirdPlace)
+  addPlacement(11, consolationThirdResult.winnerId, "11. helyezett")
+  addPlacement(12, consolationThirdResult.loserId, "12. helyezett")
 
-  // 13th-14th from consolation 5th place match
+  // 13th and 14th from consolation 5th place match
   const consolation5thMatch = consolationMatches.find((m) => m.id.includes("5th"))
-  if (consolation5thMatch && consolation5thMatch.status === "completed" && consolation5thMatch.homeScore != null && consolation5thMatch.awayScore != null) {
-    const winnerId = consolation5thMatch.homeScore > consolation5thMatch.awayScore ? consolation5thMatch.homeTeamId : consolation5thMatch.awayTeamId
-    const loserId = consolation5thMatch.homeScore > consolation5thMatch.awayScore ? consolation5thMatch.awayTeamId : consolation5thMatch.homeTeamId
-    if (winnerId && !placements.find((p) => p.teamId === winnerId)) {
-      placements.push({ position: pos++, teamId: winnerId, team: findTeam(teams, winnerId), source: "Consolation 5th Place (13th)" })
-    }
-    if (loserId && !placements.find((p) => p.teamId === loserId)) {
-      placements.push({ position: pos++, teamId: loserId, team: findTeam(teams, loserId), source: "Consolation 6th Place (14th)" })
-    }
-  } else {
-    pos = Math.max(pos, 15)
-  }
+  const consolation5thResult = getMatchResult(consolation5thMatch ?? null)
+  addPlacement(13, consolation5thResult.winnerId, "13. helyezett")
+  addPlacement(14, consolation5thResult.loserId, "14. helyezett")
 
-  // 15th-16th from consolation 7th place match
+  // 15th and 16th from consolation 7th place match
   const consolation7thMatch = consolationMatches.find((m) => m.id.includes("7th"))
-  if (consolation7thMatch && consolation7thMatch.status === "completed" && consolation7thMatch.homeScore != null && consolation7thMatch.awayScore != null) {
-    const winnerId = consolation7thMatch.homeScore > consolation7thMatch.awayScore ? consolation7thMatch.homeTeamId : consolation7thMatch.awayTeamId
-    const loserId = consolation7thMatch.homeScore > consolation7thMatch.awayScore ? consolation7thMatch.awayTeamId : consolation7thMatch.homeTeamId
-    if (winnerId && !placements.find((p) => p.teamId === winnerId)) {
-      placements.push({ position: pos++, teamId: winnerId, team: findTeam(teams, winnerId), source: "Consolation 7th Place (15th)" })
-    }
-    if (loserId && !placements.find((p) => p.teamId === loserId)) {
-      placements.push({ position: pos++, teamId: loserId, team: findTeam(teams, loserId), source: "Consolation 8th Place (16th)" })
-    }
-  } else {
-    // Fallback: Fill remaining from consolation SF losers
-    const consolationSFLosers = getSemiFinalLosers(consolationMatches, teams)
-    for (const team of consolationSFLosers) {
-      if (!placements.find((p) => p.teamId === team.id)) {
-        placements.push({ position: pos++, teamId: team.id, team, source: "Consolation Bracket" })
-      }
-    }
-  }
+  const consolation7thResult = getMatchResult(consolation7thMatch ?? null)
+  addPlacement(15, consolation7thResult.winnerId, "15. helyezett")
+  addPlacement(16, consolation7thResult.loserId, "16. helyezett")
 
-  return placements
+  // Filter out any placements that didn't have valid teams (null winnerId/loserId)
+  // and sort by position
+  return placements.filter(p => p.teamId && p.team.id !== "TBD").sort((a, b) => a.position - b.position)
 }
 
 function findFinalMatch(matches: Match[]): Match | null {
@@ -671,24 +617,6 @@ function findFinalMatch(matches: Match[]): Match | null {
 function findThirdPlaceMatch(matches: Match[]): Match | null {
   // Find by match ID pattern which is more reliable
   return matches.find((m) => m.id.includes("3rd")) ?? null
-}
-
-function getSemiFinalLosers(matches: Match[], teams: Team[]): Team[] {
-  const maxRound = Math.max(...matches.map((m) => m.bracketRound ?? 0))
-  const sfRound = maxRound - 1
-  if (sfRound < 0) return []
-
-  const sfMatches = matches.filter((m) => m.bracketRound === sfRound && m.status === "completed")
-  const losers: Team[] = []
-  for (const m of sfMatches) {
-    if (m.homeScore == null || m.awayScore == null) continue
-    const loserId = m.homeScore > m.awayScore ? m.awayTeamId : m.homeTeamId
-    if (loserId) {
-      const team = teams.find((t) => t.id === loserId)
-      if (team) losers.push(team)
-    }
-  }
-  return losers
 }
 
 function findTeam(teams: Team[], teamId: string): Team {
